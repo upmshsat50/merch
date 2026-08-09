@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#8d153a" />
+  <meta name="description" content="UP Manila School of Health Sciences at 50 — Salubong 2026 Back-to-School Merch Pre-Order" />
+  <title>UPM SHS at 50 | Salubong 2026 Merch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=League+Spartan:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="announcement">BACK-TO-SCHOOL PRE-ORDER • SALUBONG 2026 • UPM SHS AT 50</div>
+
+  <header class="site-header">
+    <a href="#top" class="brand" aria-label="UPM SHS at 50 merch home">
+      <span class="brand-mark">50</span>
+      <span>
+        <strong>UPM SHS at 50</strong>
+        <small>Salubong 2026 Merch</small>
+      </span>
+    </a>
+    <nav>
+      <a href="#shop">Shop</a>
+      <a href="#how">How to order</a>
+      <button class="cart-button" id="cartButton" type="button">
+        Pre-order <span id="cartCount">0</span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">UP Manila School of Health Sciences • 50th Anniversary</p>
+        <h1>Wear the legacy.<br><span>Welcome the new school year.</span></h1>
+        <p class="lead">
+          Official Salubong 2026 back-to-school merchandise for the UPM School of Health Sciences community.
+          Choose your shirt, lanyard, or both, then submit one consolidated pre-order.
+        </p>
+        <div class="hero-actions">
+          <a class="primary-btn" href="#shop">Shop the collection</a>
+          <a class="secondary-btn" href="#how">How pre-order works</a>
+        </div>
+        <div class="hero-meta">
+          <span>Limited edition</span>
+          <span>Official SHS designs</span>
+          <span>Pre-order basis</span>
+        </div>
+      </div>
+      <div class="hero-art">
+        <img src="assets/hero.jpg" alt="Salubong 2026 Merch collection poster">
+        <div class="floating-badge">SHS @ 50</div>
+      </div>
+    </section>
+
+    <section class="section intro" id="shop">
+      <div>
+        <p class="eyebrow">The collection</p>
+        <h2>Back-to-school, SHS style.</h2>
+      </div>
+      <p>
+        Select the items you want below. Shirt sizes and quantities can be adjusted in your pre-order bag
+        before submission.
+      </p>
+    </section>
+
+    <section class="shop-layout">
+      <aside class="filter-card">
+        <p class="filter-title">Browse</p>
+        <button class="filter active" data-filter="all">All items <span>8</span></button>
+        <button class="filter" data-filter="shirt">Shirts <span>4</span></button>
+        <button class="filter" data-filter="lanyard">Lanyards <span>4</span></button>
+        <div class="filter-note">
+          <strong>Note</strong>
+          <p>Product images are based on the current merch posters. Replace them anytime in the <code>assets</code> folder.</p>
+        </div>
+      </aside>
+
+      <div class="product-grid" id="productGrid"></div>
+    </section>
+
+    <section class="feature-strip">
+      <article>
+        <span>01</span>
+        <h3>Choose your merch</h3>
+        <p>Mix shirts and lanyards in one order.</p>
+      </article>
+      <article>
+        <span>02</span>
+        <h3>Review your order</h3>
+        <p>Confirm sizes, quantities, and your total.</p>
+      </article>
+      <article>
+        <span>03</span>
+        <h3>Submit your pre-order</h3>
+        <p>Provide your contact and fulfillment details.</p>
+      </article>
+    </section>
+
+    <section class="section how" id="how">
+      <div>
+        <p class="eyebrow">How it works</p>
+        <h2>One simple pre-order flow.</h2>
+      </div>
+      <div class="how-grid">
+        <div class="how-card">
+          <span>1</span>
+          <h3>Add items</h3>
+          <p>Tap “Add to pre-order” on the designs you want.</p>
+        </div>
+        <div class="how-card">
+          <span>2</span>
+          <h3>Fill in your details</h3>
+          <p>Enter your name, program, contact information, and preferred claim method.</p>
+        </div>
+        <div class="how-card">
+          <span>3</span>
+          <h3>Wait for confirmation</h3>
+          <p>Your organizers can verify payment and send claim or distribution instructions separately.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div>
+        <p class="eyebrow">Salubong 2026</p>
+        <h2>Ready to rep SHS?</h2>
+        <p>Build your pre-order now and keep your order summary for reference.</p>
+      </div>
+      <button class="primary-btn" type="button" onclick="openCart()">Open pre-order bag</button>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <strong>UPM SHS at 50</strong>
+      <p>Salubong 2026 Back-to-School Merch</p>
+    </div>
+    <p>University of the Philippines Manila • School of Health Sciences</p>
+  </footer>
+
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" aria-label="Pre-order bag">
+    <div class="drawer-head">
+      <div>
+        <p class="eyebrow">Your selection</p>
+        <h2>Pre-order bag</h2>
+      </div>
+      <button class="icon-btn" id="closeCart" aria-label="Close pre-order bag">×</button>
+    </div>
+
+    <div class="cart-items" id="cartItems"></div>
+
+    <div class="cart-empty" id="cartEmpty">
+      <div class="empty-icon">50</div>
+      <h3>Your bag is empty</h3>
+      <p>Add a shirt or lanyard to start your Salubong 2026 pre-order.</p>
+    </div>
+
+    <div class="cart-footer" id="cartFooter">
+      <div class="total-row">
+        <span>Estimated total</span>
+        <strong id="cartTotal">₱0</strong>
+      </div>
+      <p class="small-note">Final payment and fulfillment instructions may be confirmed by the organizing team.</p>
+      <button class="primary-btn full" id="checkoutBtn">Continue to details</button>
+    </div>
+  </aside>
+
+  <div class="modal-backdrop" id="checkoutModal" hidden>
+    <section class="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+      <div class="drawer-head">
+        <div>
+          <p class="eyebrow">Almost there</p>
+          <h2 id="checkoutTitle">Pre-order details</h2>
+        </div>
+        <button class="icon-btn" id="closeCheckout" aria-label="Close checkout">×</button>
+      </div>
+
+      <form id="orderForm">
+        <div class="form-grid">
+          <label>
+            Full name
+            <input required name="fullName" placeholder="Juan Dela Cruz" />
+          </label>
+          <label>
+            Program / affiliation
+            <select required name="program">
+              <option value="">Select</option>
+              <option>Medicine</option>
+              <option>Nursing</option>
+              <option>Midwifery</option>
+              <option>SHS Staff / Faculty</option>
+              <option>Alumni</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>
+            Email
+            <input required type="email" name="email" placeholder="name@email.com" />
+          </label>
+          <label>
+            Mobile number
+            <input required name="mobile" placeholder="09XX XXX XXXX" />
+          </label>
+          <label>
+            Campus / location
+            <select required name="campus">
+              <option value="">Select</option>
+              <option>Palo, Leyte</option>
+              <option>Baler, Aurora</option>
+              <option>Koronadal, South Cotabato</option>
+              <option>Tarlac</option>
+              <option>Other / To be coordinated</option>
+            </select>
+          </label>
+          <label>
+            Preferred fulfillment
+            <select required name="fulfillment">
+              <option value="">Select</option>
+              <option>Campus pick-up</option>
+              <option>Meet-up / distribution day</option>
+              <option>Shipping / courier</option>
+              <option>To be coordinated</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="full-label">
+          Notes
+          <textarea name="notes" rows="3" placeholder="Optional: special instructions, batch/section, etc."></textarea>
+        </label>
+
+        <label class="consent">
+          <input required type="checkbox" name="consent">
+          <span>I confirm that the order details above are correct and understand that this is a pre-order.</span>
+        </label>
+
+        <div class="order-preview">
+          <div>
+            <span>Order total</span>
+            <strong id="checkoutTotal">₱0</strong>
+          </div>
+          <small id="checkoutItemCount">0 items</small>
+        </div>
+
+        <button class="primary-btn full" type="submit">Submit pre-order</button>
+        <p class="endpoint-note" id="endpointNote"></p>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
