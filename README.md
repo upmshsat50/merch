@@ -1,47 +1,155 @@
-# UPM SHS at 50 — Salubong 2026 Merch Website
+# UPM SHS at 50 — Salubong 2026 Merch Pre-Order Store
 
-This is a ready-to-deploy static pre-order website based on the merch posters you provided.
+A ready-to-deploy mini merch store with:
 
-## Included
-- Responsive home/shop page
-- 4 shirts at ₱350
-- 4 lanyards (₱100 / ₱175)
-- Shirt size selector
-- Pre-order cart with quantity controls
-- Customer details form
-- Automatic total calculation
-- Downloadable order receipt
-- Optional backend endpoint support
+- Salubong 2026 product catalog
+- Shirt sizes and quantities
+- Pre-order cart
+- Buyer/contact/campus details
+- GCash payment instructions
+- Payment proof upload
+- Secure Supabase database
+- Private payment-proof storage
+- Admin email/password login
+- Admin order tracker
+- Payment status workflow
+- Production/claiming status workflow
+- CSV export
+- Buyer order reference + downloadable receipt
 
-## Deploy quickly
-You can upload the whole folder to:
+## Files
+
+- `index.html` — public pre-order store
+- `admin.html` — organizer dashboard
+- `config.js` — Supabase + GCash settings
+- `supabase-schema.sql` — database/RLS/storage setup
+- `app.js` — public ordering flow
+- `admin.js` — admin tracker
+- `assets/` — merch images and GCash QR placeholder
+
+## 1. Create / choose a Supabase project
+
+Open your Supabase project.
+
+Use the **Project URL** and the browser-safe **Publishable key** (`sb_publishable_...`).
+Older projects may still show an `anon` key; that also works.
+
+Never put a Supabase secret/service-role key in this website.
+
+## 2. Run the database setup
+
+Open Supabase > SQL Editor.
+
+Paste the full contents of:
+
+`supabase-schema.sql`
+
+Run it once.
+
+This creates:
+
+- `merch_products`
+- `merch_orders`
+- `merch_order_items`
+- `admin_users`
+- private `payment-proofs` storage bucket
+- Row Level Security policies
+- `submit_merch_order()` transaction function
+- `is_merch_admin()` helper
+
+The public website does NOT get permission to read orders.
+
+## 3. Connect the website
+
+Edit `config.js`:
+
+```js
+supabaseUrl: "https://YOUR-PROJECT.supabase.co",
+supabasePublishableKey: "sb_publishable_...",
+```
+
+Also update:
+
+```js
+gcashName: "NAME OF ACCOUNT",
+gcashNumber: "09XX XXX XXXX",
+preorderDeadline: "August XX, 2026",
+```
+
+## 4. Update the GCash QR
+
+Replace:
+
+`assets/gcash-qr-placeholder.svg`
+
+with your real QR image.
+
+You can also change `gcashQrImage` in `config.js` if your file has another name.
+
+## 5. Create merch admin accounts
+
+In Supabase:
+
+Authentication > Users > Add user
+
+Create the organizer's email/password.
+
+Then in SQL Editor run:
+
+```sql
+insert into public.admin_users(user_id)
+select id
+from auth.users
+where email = 'ADMIN_EMAIL_HERE'
+on conflict do nothing;
+```
+
+Repeat for each organizer you want to authorize.
+
+Then they can log in through:
+
+`admin.html`
+
+## 6. Deploy
+
+The folder is a static website, so it works on:
+
 - GitHub Pages
 - Netlify
 - Vercel
 - Cloudflare Pages
 
-For GitHub Pages, upload all files in this folder to a repository, then enable Pages in repository settings.
+Upload the entire folder, not only `index.html`.
 
-## Collect orders online
-Open `app.js` and find:
+## Security notes
 
-    const ORDER_ENDPOINT = "";
+- Only the Supabase publishable key belongs in `config.js`.
+- Order prices are recalculated inside PostgreSQL, so buyers cannot simply change the browser price and submit a cheaper total.
+- Buyers can submit orders but cannot read the order database.
+- Payment proofs are stored in a private bucket.
+- Admin access is checked against `admin_users`.
+- The current public proof-upload policy is appropriate for a lightweight pre-order campaign, but a high-volume/public launch should add CAPTCHA or an Edge Function to reduce spam.
 
-Paste your Google Apps Script, Formspree, Supabase Edge Function, or your own API endpoint between the quotes.
+## Current merch seeded
 
-The site sends a JSON object containing:
-- reference
-- submittedAt
-- customer details
-- ordered items
-- total
+Shirts — ₱350:
+- UPM SHS
+- Midwifery
+- Nursing
+- Medicine
 
-If you leave the endpoint blank, the site still works in "demo mode" and downloads a receipt for the buyer.
+Lanyards:
+- SHS commemorative — ₱100
+- Medicine — ₱100
+- Nursing — ₱100
+- Midwifery — ₱100
 
-## Replace images / QR code posters
-The QR codes shown in the original Canva screenshots are NOT used for checkout. The website has its own buttons and order flow.
+Prices and availability can be edited in `merch_products` after setup.
 
-To update product images later, replace the files in `assets/` while keeping the same filenames.
+## Updated poster set
 
-## Product data
-Edit product names, prices, descriptions, and size choices in the `products` array near the top of `app.js`.
+Version 3 uses the clean August 9, 2026 Salubong 2026 brochure exports supplied by the merch team.
+
+- Shirts: ₱350 each
+- SHS, Medicine, Nursing, and Midwifery lanyards: ₱100 each
+- Nationwide shipping is highlighted on the public storefront

@@ -8,9 +8,9 @@ const fallbackProducts = [
   {id:"shirt-nursing",name:"Nursing Shirt",description:"UPM SHS Nursing edition",category:"shirt",price:350,image_key:"shirt-nursing.jpg",sizes:["XS","S","M","L","XL","2XL","3XL"],active:true,sort_order:3},
   {id:"shirt-medicine",name:"Medicine Shirt",description:"UPM SHS Medicine edition",category:"shirt",price:350,image_key:"shirt-medicine.jpg",sizes:["XS","S","M","L","XL","2XL","3XL"],active:true,sort_order:4},
   {id:"lanyard-shs",name:"SHS Commemorative Lanyard",description:"Jafar M. Lomantong / School of Health Sciences design",category:"lanyard",price:100,image_key:"lanyard-shs.jpg",sizes:null,active:true,sort_order:5},
-  {id:"lanyard-medicine",name:"Medicine Lanyard",description:"UPM SHS Medicine lanyard",category:"lanyard",price:175,image_key:"lanyard-medicine.jpg",sizes:null,active:true,sort_order:6},
-  {id:"lanyard-nursing",name:"Nursing Lanyard",description:"UPM SHS Nursing lanyard",category:"lanyard",price:175,image_key:"lanyard-nursing.jpg",sizes:null,active:true,sort_order:7},
-  {id:"lanyard-midwifery",name:"Midwifery Lanyard",description:"UPM SHS Midwifery lanyard",category:"lanyard",price:175,image_key:"lanyard-midwifery.jpg",sizes:null,active:true,sort_order:8}
+  {id:"lanyard-medicine",name:"Medicine Lanyard",description:"UPM SHS Medicine lanyard",category:"lanyard",price:100,image_key:"lanyard-medicine.jpg",sizes:null,active:true,sort_order:6},
+  {id:"lanyard-nursing",name:"Nursing Lanyard",description:"UPM SHS Nursing lanyard",category:"lanyard",price:100,image_key:"lanyard-nursing.jpg",sizes:null,active:true,sort_order:7},
+  {id:"lanyard-midwifery",name:"Midwifery Lanyard",description:"UPM SHS Midwifery lanyard",category:"lanyard",price:100,image_key:"lanyard-midwifery.jpg",sizes:null,active:true,sort_order:8}
 ];
 
 let products = [...fallbackProducts];

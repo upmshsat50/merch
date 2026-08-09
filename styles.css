@@ -29,3 +29,17 @@ h1,h2,.drawer-head h2,.success-card h2{font-family:"League Spartan";line-height:
 .toast{position:fixed;z-index:110;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#171717;color:#fff;border-radius:999px;padding:11px 15px;font-size:.78rem;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:900px){nav>a{display:none}.hero{grid-template-columns:1fr;gap:34px}.hero-art{order:1}.hero-copy{order:2}.intro{grid-template-columns:1fr}.shop-layout{grid-template-columns:1fr}.filter-card{position:static;display:flex;gap:8px;overflow:auto}.filter-title,.filter-note{display:none}.filter{width:auto;white-space:nowrap;border:1px solid var(--line)}.payment-section{grid-template-columns:1fr}.qr-card{max-width:360px}.feature-strip{grid-template-columns:1fr 1fr}.feature-strip article:nth-child(2){border-right:0}.feature-strip article{border-bottom:1px solid var(--line)}}
 @media(max-width:650px){.site-header{padding:11px 16px}.brand small{display:none}.brand-mark{width:40px;height:40px}nav{gap:8px}.hero{padding:18px 16px 35px}.hero h1{font-size:3.5rem}.hero-art img{border-radius:22px}.floating-badge{width:76px;height:76px;font-size:.9rem}.deadline-card{margin:0 16px 10px;grid-template-columns:1fr}.deadline-card>div{border-right:0;border-bottom:1px solid var(--line)}.deadline-card>div:last-child{border-bottom:0}.section,.shop-layout{padding-left:16px;padding-right:16px}.product-grid{grid-template-columns:1fr}.payment-details{grid-template-columns:1fr}.feature-strip{margin:0 16px 55px;grid-template-columns:1fr}.feature-strip article{border-right:0}.cta{margin:0 16px 55px;padding:28px;display:block}.cta .primary-btn{width:100%;margin-top:12px}footer{display:block;padding-left:16px;padding-right:16px}footer>p{margin-top:14px}.form-grid,.payment-choice{grid-template-columns:1fr}.checkout-modal{border-radius:19px}.checkout-modal form{padding:18px}}
+
+.shipping-banner{
+  max-width:1152px;margin:0 auto 80px;padding:30px;
+  display:grid;grid-template-columns:1fr 380px;gap:34px;align-items:center;
+  border-radius:28px;background:linear-gradient(135deg,#f8f0ea,#f3ecf8);
+  border:1px solid var(--line)
+}
+.shipping-banner h2{font-family:"League Spartan";font-size:clamp(2.4rem,4vw,4rem);line-height:.98;letter-spacing:-.035em;margin:0}
+.shipping-banner p:not(.eyebrow){color:var(--muted);line-height:1.7;max-width:610px}
+.shipping-art img{width:100%;display:block;border-radius:20px;box-shadow:var(--shadow)}
+@media(max-width:800px){
+  .shipping-banner{margin:0 16px 60px;grid-template-columns:1fr;padding:22px}
+  .shipping-art{order:1}.shipping-copy{order:2}
+}

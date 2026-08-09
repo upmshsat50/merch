@@ -10,7 +10,7 @@ window.MERCH_CONFIG = {
   gcashQrImage: "assets/gcash-qr-placeholder.svg",
 
   preorderDeadline: "To be announced",
-  pickupNote: "Claiming/distribution details will be announced by the organizing team.",
+  pickupNote: "Nationwide shipping available. Campus claiming/distribution details may also be announced by the organizing team.",
   proofMaxMB: 5,
 
   // Optional links
