@@ -1,7 +1,6 @@
 window.MERCH_CONFIG = {
-  // Add the browser-safe Supabase Project URL + Publishable key before launch.
-  supabaseUrl: "",
-  supabasePublishableKey: "",
+  supabaseUrl: "https://wphpzwozqhzovnwkpwhz.supabase.co",
+  supabasePublishableKey: "sb_publishable_lbxlQ-8bRaa3z_bJ7fsJYw_Id_H3dIi",
 
   gcashName: "GCash / InstaPay",
   gcashNumber: "Scan the QR code to pay",
