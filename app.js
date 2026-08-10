@@ -24,11 +24,11 @@ function applyConfig(){
   $("deadlineText").textContent = cfg.preorderDeadline || "To be announced";
   $("deadlineTop").textContent = cfg.preorderDeadline ? `DEADLINE: ${cfg.preorderDeadline}` : "PRE-ORDER";
   $("pickupText").textContent = cfg.pickupNote || "Details to follow";
-  $("gcashName").textContent = cfg.gcashName || "GCash / InstaPay QR";
-  $("gcashNumber").textContent = cfg.gcashNumber || "Scan the QR code to pay";
-  $("checkoutGcashName").textContent = cfg.gcashName || "GCash / InstaPay QR";
-  $("checkoutGcashNumber").textContent = cfg.gcashNumber || "Scan the QR code to pay";
-  $("gcashQr").src = cfg.gcashQrImage || "assets/gcash-qr.jpeg";
+  $("gcashName").textContent = cfg.gcashName || "UPM SHS AT 50";
+  $("gcashNumber").textContent = cfg.gcashNumber || "TO BE UPDATED";
+  $("checkoutGcashName").textContent = cfg.gcashName || "UPM SHS AT 50";
+  $("checkoutGcashNumber").textContent = cfg.gcashNumber || "TO BE UPDATED";
+  $("gcashQr").src = cfg.gcashQrImage || "assets/gcash-qr-placeholder.svg";
   $("proofHint").textContent = `JPG, PNG, WEBP, or PDF • max ${cfg.proofMaxMB || 5} MB`;
   $("connectionNote").textContent = isConfigured
     ? "Secure order collection is connected to Supabase."

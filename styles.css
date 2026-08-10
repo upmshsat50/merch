@@ -43,3 +43,33 @@ h1,h2,.drawer-head h2,.success-card h2{font-family:"League Spartan";line-height:
   .shipping-banner{margin:0 16px 60px;grid-template-columns:1fr;padding:22px}
   .shipping-art{order:1}.shipping-copy{order:2}
 }
+
+
+.brand-logo{
+  width:58px;
+  height:58px;
+  object-fit:cover;
+  border-radius:14px;
+  display:block;
+  background:#fff;
+  box-shadow:0 6px 18px rgba(0,0,0,.08)
+}
+.footer-brand{
+  display:flex;
+  align-items:center;
+  gap:12px
+}
+.footer-logo{
+  width:56px;
+  height:56px;
+  object-fit:cover;
+  border-radius:14px;
+  display:block;
+  background:#fff;
+  box-shadow:0 6px 18px rgba(0,0,0,.08)
+}
+@media(max-width:650px){
+  .brand-logo{width:46px;height:46px;border-radius:12px}
+  .footer-brand{align-items:flex-start}
+  .footer-logo{width:48px;height:48px;border-radius:12px}
+}
