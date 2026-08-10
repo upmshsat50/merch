@@ -12,6 +12,10 @@ const sb = configured
   : null;
 
 let orders = [];
+let catalogProducts = [];
+let shippingRates = {};
+let editingOrder = null;
+let editItems = [];
 
 const $ = id => document.getElementById(id);
 const peso = n => "₱" + Number(n || 0).toLocaleString("en-PH");
@@ -44,7 +48,7 @@ function showToast(message) {
   t.textContent = message;
   t.classList.add("show");
   clearTimeout(window._toast);
-  window._toast = setTimeout(() => t.classList.remove("show"), 2100);
+  window._toast = setTimeout(() => t.classList.remove("show"), 2400);
 }
 
 function redirectToLogin() {
@@ -89,7 +93,41 @@ async function guardDashboard() {
   $("adminEmail").textContent = data.user.email || "Admin";
   $("dashboardLoading").hidden = true;
   $("dashboardView").hidden = false;
+
+  await loadCatalog();
   await loadOrders();
+}
+
+async function loadCatalog(){
+  const [{data:productData,error:productError},{data:rateData,error:rateError}] = await Promise.all([
+    sb.from("merch_products")
+      .select("id,name,category,price,sizes,estimated_weight_g,sort_order,active")
+      .eq("active",true)
+      .order("sort_order"),
+    sb.from("shipping_rates")
+      .select("destination_zone,weight_max_kg,fee")
+      .eq("origin_zone","Visayas")
+      .order("weight_max_kg")
+  ]);
+
+  if(productError){
+    console.error(productError);
+    showToast("Could not load merch catalog.");
+  } else {
+    catalogProducts = productData || [];
+  }
+
+  if(rateError){
+    console.error(rateError);
+  } else {
+    shippingRates = {};
+    for(const r of rateData || []){
+      (shippingRates[r.destination_zone] ||= []).push([
+        Number(r.weight_max_kg),
+        Number(r.fee)
+      ]);
+    }
+  }
 }
 
 $("logoutBtn").addEventListener("click", async () => {
@@ -99,7 +137,10 @@ $("logoutBtn").addEventListener("click", async () => {
   redirectToLogin();
 });
 
-$("refreshBtn").addEventListener("click", loadOrders);
+$("refreshBtn").addEventListener("click", async () => {
+  await loadCatalog();
+  await loadOrders();
+});
 $("searchInput").addEventListener("input", renderOrders);
 $("paymentFilter").addEventListener("change", renderOrders);
 $("orderFilter").addEventListener("change", renderOrders);
@@ -112,7 +153,7 @@ async function loadOrders() {
     id,reference,full_name,program,email,mobile,campus,fulfillment,notes,
     merch_total,shipping_fee,total,payment_method,payment_status,order_status,
     proof_path,shipping_address,shipping_city,shipping_province,shipping_postal,
-    destination_zone,estimated_weight_kg,created_at,
+    destination_zone,estimated_weight_kg,created_at,updated_at,
     merch_order_items(id,product_id,product_name,variant,quantity,unit_price,subtotal)
   `).order("created_at", { ascending:false });
 
@@ -134,7 +175,8 @@ function filteredOrders() {
   return orders.filter(o => {
     const hay = [
       o.reference,o.full_name,o.email,o.mobile,o.program,o.campus,
-      o.shipping_city,o.shipping_province
+      o.shipping_city,o.shipping_province,
+      ...(o.merch_order_items || []).map(i=>`${i.product_name} ${i.variant}`)
     ].join(" ").toLowerCase();
 
     return (!q || hay.includes(q)) &&
@@ -149,7 +191,10 @@ function renderOrders() {
 
   $("ordersBody").innerHTML = rows.map(o => `
     <tr>
-      <td><span class="ref">${esc(o.reference)}</span></td>
+      <td>
+        <span class="ref">${esc(o.reference)}</span>
+        <button class="edit-order-btn" type="button" onclick="openEditOrder('${o.id}')">Edit order</button>
+      </td>
 
       <td class="customer">
         <strong>${esc(o.full_name)}</strong>
@@ -258,6 +303,428 @@ async function viewProof(path) {
   window.open(data.signedUrl, "_blank", "noopener");
 }
 
+/* ------------------------------
+   ORDER EDITING
+------------------------------ */
+
+function productById(id){
+  return catalogProducts.find(p=>p.id===id);
+}
+
+function rateFor(zone, weightKg){
+  const rows = shippingRates[zone] || [];
+  const found = rows.find(([max]) => weightKg <= max);
+  return found ? Number(found[1]) : null;
+}
+
+function openEditOrder(id){
+  const source = orders.find(o=>o.id===id);
+  if(!source) return;
+
+  if(!catalogProducts.length){
+    showToast("Product catalog is still loading. Please refresh and try again.");
+    return;
+  }
+
+  editingOrder = JSON.parse(JSON.stringify(source));
+  editItems = (source.merch_order_items || []).map(i=>({
+    product_id:i.product_id,
+    variant:i.variant || "",
+    quantity:Number(i.quantity || 1)
+  }));
+
+  $("editOrderRef").textContent = source.reference;
+  $("editFullName").value = source.full_name || "";
+  $("editProgram").value = source.program || "";
+  $("editEmail").value = source.email || "";
+  $("editMobile").value = source.mobile || "";
+  $("editCampus").value = source.campus || "";
+  $("editFulfillment").value = source.fulfillment || "Campus pick-up";
+  $("editShippingAddress").value = source.shipping_address || "";
+  $("editShippingCity").value = source.shipping_city || "";
+  $("editShippingProvince").value = source.shipping_province || "";
+  $("editShippingPostal").value = source.shipping_postal || "";
+  $("editDestinationZone").value = source.destination_zone || "";
+  $("editBuyerNotes").value = source.notes || "";
+  $("editAdminNote").value = "";
+  $("editPreviousTotal").textContent = peso(source.total);
+
+  const shippingOption = $("editFulfillment").querySelector('option[value="J&T Express shipping"]');
+  shippingOption.disabled = source.payment_method === "Cash on Pick-up";
+
+  $("editPaymentBadge").textContent = `${paymentMethodLabel(source)} • ${paymentStatusOptions(source).find(x=>x[0]===source.payment_status)?.[1] || source.payment_status}`;
+
+  toggleEditShipping();
+  renderEditItems();
+  recalculateEditTotals();
+  loadEditHistory(source.id);
+
+  $("editOrderModal").hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeEditOrder(){
+  $("editOrderModal").hidden = true;
+  document.body.style.overflow = "";
+  editingOrder = null;
+  editItems = [];
+}
+
+function toggleEditShipping(){
+  if(!editingOrder) return;
+
+  if(editingOrder.payment_method === "Cash on Pick-up" &&
+     $("editFulfillment").value === "J&T Express shipping"){
+    $("editFulfillment").value = "Campus pick-up";
+    showToast("Cash orders can only be fulfilled through Palo campus pick-up.");
+  }
+
+  const shipping = $("editFulfillment").value === "J&T Express shipping";
+  $("editShippingFields").hidden = !shipping;
+  recalculateEditTotals();
+}
+
+function productOptions(selectedId){
+  return catalogProducts.map(p=>
+    `<option value="${escAttr(p.id)}" ${p.id===selectedId ? "selected" : ""}>${esc(p.name)} — ${peso(p.price)}</option>`
+  ).join("");
+}
+
+function variantControl(item, index){
+  const p = productById(item.product_id);
+  if(p?.sizes?.length){
+    const current = p.sizes.includes(item.variant) ? item.variant : p.sizes[0];
+    item.variant = current;
+    return `
+      <label>Size
+        <select onchange="editItemVariantChanged(${index},this.value)">
+          ${p.sizes.map(s=>`<option ${s===current ? "selected" : ""}>${esc(s)}</option>`).join("")}
+        </select>
+      </label>`;
+  }
+  item.variant = "";
+  return `
+    <label>Variation
+      <input value="Design is selected above" disabled>
+    </label>`;
+}
+
+function renderEditItems(){
+  if(!editItems.length){
+    $("editItemsList").innerHTML = `<div class="edit-empty-items">No items. Add at least one item before saving.</div>`;
+    recalculateEditTotals();
+    return;
+  }
+
+  $("editItemsList").innerHTML = editItems.map((item,index)=>{
+    const p = productById(item.product_id);
+    const lineTotal = Number(p?.price || 0) * Number(item.quantity || 0);
+
+    return `
+      <div class="edit-item-row">
+        <label class="edit-product-label">Product / Design
+          <select onchange="editItemProductChanged(${index},this.value)">
+            ${productOptions(item.product_id)}
+          </select>
+        </label>
+
+        ${variantControl(item,index)}
+
+        <label>Qty
+          <input type="number" min="1" max="20" value="${Number(item.quantity || 1)}"
+            oninput="editItemQtyChanged(${index},this.value)">
+        </label>
+
+        <div class="edit-line-total">
+          <span>Line total</span>
+          <strong>${peso(lineTotal)}</strong>
+        </div>
+
+        <button type="button" class="remove-edit-item" onclick="removeEditItem(${index})" aria-label="Remove item">Remove</button>
+      </div>`;
+  }).join("");
+
+  recalculateEditTotals();
+}
+
+function editItemProductChanged(index, productId){
+  const item = editItems[index];
+  const p = productById(productId);
+  if(!item || !p) return;
+
+  item.product_id = productId;
+  item.variant = p.sizes?.length ? p.sizes[0] : "";
+  renderEditItems();
+}
+
+function editItemVariantChanged(index, variant){
+  if(!editItems[index]) return;
+  editItems[index].variant = variant;
+  recalculateEditTotals();
+}
+
+function editItemQtyChanged(index, qty){
+  if(!editItems[index]) return;
+  editItems[index].quantity = Math.max(1, Math.min(20, Number(qty || 1)));
+  recalculateEditTotals();
+}
+
+function removeEditItem(index){
+  editItems.splice(index,1);
+  renderEditItems();
+}
+
+function addEditItem(){
+  const first = catalogProducts[0];
+  if(!first){
+    showToast("No active products found.");
+    return;
+  }
+  editItems.push({
+    product_id:first.id,
+    variant:first.sizes?.[0] || "",
+    quantity:1
+  });
+  renderEditItems();
+}
+
+function calculateEditedOrder(){
+  const merchTotal = editItems.reduce((sum,item)=>{
+    const p = productById(item.product_id);
+    return sum + Number(p?.price || 0) * Number(item.quantity || 0);
+  },0);
+
+  const shipping = $("editFulfillment").value === "J&T Express shipping";
+  let weightG = 0;
+  let shippingFee = 0;
+  let shippingRateAvailable = true;
+
+  if(shipping){
+    weightG = Number(cfg.packagingWeightG || 100) + editItems.reduce((sum,item)=>{
+      const p = productById(item.product_id);
+      return sum + Number(p?.estimated_weight_g || 0) * Number(item.quantity || 0);
+    },0);
+
+    const zone = $("editDestinationZone").value;
+    shippingFee = zone ? rateFor(zone,weightG/1000) : null;
+    shippingRateAvailable = Number.isFinite(shippingFee);
+  }
+
+  const total = merchTotal + (Number.isFinite(shippingFee) ? shippingFee : 0);
+
+  return {
+    merchTotal,
+    shippingFee,
+    weightG,
+    total,
+    shipping,
+    shippingRateAvailable
+  };
+}
+
+function recalculateEditTotals(){
+  if(!editingOrder) return;
+  const calc = calculateEditedOrder();
+  const oldTotal = Number(editingOrder.total || 0);
+  const diff = calc.total - oldTotal;
+
+  $("editNewTotal").textContent = calc.shipping && !calc.shippingRateAvailable
+    ? "Rate unavailable"
+    : peso(calc.total);
+
+  const diffEl = $("editDifference");
+  if(calc.shipping && !calc.shippingRateAvailable){
+    diffEl.textContent = "Cannot calculate";
+    diffEl.dataset.type = "warning";
+  } else if(Math.abs(diff) < 0.001){
+    diffEl.textContent = "No change";
+    diffEl.dataset.type = "same";
+  } else if(diff > 0){
+    diffEl.textContent = `+${peso(diff)} due`;
+    diffEl.dataset.type = "increase";
+  } else {
+    diffEl.textContent = `${peso(Math.abs(diff))} refund / credit`;
+    diffEl.dataset.type = "decrease";
+  }
+
+  if(calc.shipping){
+    $("editShippingEstimate").textContent = calc.shippingRateAvailable
+      ? `Estimated parcel: ${(calc.weightG/1000).toFixed(2)} kg • J&T fee: ${peso(calc.shippingFee)}`
+      : `Estimated parcel: ${(calc.weightG/1000).toFixed(2)} kg • No matching online J&T rate.`;
+  } else {
+    $("editShippingEstimate").textContent = "Palo campus pick-up • no courier fee.";
+  }
+
+  const impact = $("editPaymentImpact");
+  impact.className = "edit-payment-impact";
+
+  if(calc.shipping && !calc.shippingRateAvailable){
+    impact.textContent = "Select a valid destination zone or reduce the parcel size before saving.";
+    impact.classList.add("warning");
+  } else if(diff > 0 && editingOrder.payment_status === "Verified"){
+    impact.textContent = `This order was already marked paid/verified. Saving a higher total will return its payment status to Pending so the additional ${peso(diff)} can be collected and verified.`;
+    impact.classList.add("warning");
+  } else if(diff < 0 && editingOrder.payment_status === "Verified"){
+    impact.textContent = `The revised order is ${peso(Math.abs(diff))} lower than the paid amount. The edit history will record this as a possible refund/credit due.`;
+    impact.classList.add("refund");
+  } else if(diff > 0){
+    impact.textContent = `Additional amount due after this edit: ${peso(diff)}.`;
+    impact.classList.add("warning");
+  } else if(diff < 0){
+    impact.textContent = `The new total is ${peso(Math.abs(diff))} lower than the previous total.`;
+    impact.classList.add("refund");
+  } else {
+    impact.textContent = "The order total will not change.";
+    impact.classList.add("same");
+  }
+}
+
+async function loadEditHistory(orderId){
+  $("editHistory").innerHTML = `<span class="muted">Loading edit history…</span>`;
+
+  const {data,error} = await sb
+    .from("merch_order_edits")
+    .select("id,admin_email,edit_note,old_total,new_total,amount_difference,created_at")
+    .eq("order_id",orderId)
+    .order("created_at",{ascending:false})
+    .limit(8);
+
+  if(error){
+    console.error(error);
+    $("editHistory").innerHTML = `<span class="muted">Edit history will be available after the V11 SQL patch is installed.</span>`;
+    return;
+  }
+
+  if(!data?.length){
+    $("editHistory").innerHTML = `<span class="muted">No previous edits.</span>`;
+    return;
+  }
+
+  $("editHistory").innerHTML = data.map(row=>{
+    const diff = Number(row.amount_difference || 0);
+    const change = Math.abs(diff) < .001
+      ? "Total unchanged"
+      : diff > 0
+        ? `Total +${peso(diff)}`
+        : `Total −${peso(Math.abs(diff))}`;
+
+    return `
+      <div class="edit-history-entry">
+        <div>
+          <strong>${esc(row.admin_email || "Admin")}</strong>
+          <span>${new Date(row.created_at).toLocaleString("en-PH")}</span>
+        </div>
+        <p>${esc(row.edit_note)}</p>
+        <small>${change} • ${peso(row.old_total)} → ${peso(row.new_total)}</small>
+      </div>`;
+  }).join("");
+}
+
+async function saveEditedOrder(event){
+  event.preventDefault();
+  if(!editingOrder) return;
+
+  if(!editItems.length){
+    showToast("Add at least one order item.");
+    return;
+  }
+
+  const editNote = $("editAdminNote").value.trim();
+  if(editNote.length < 3){
+    showToast("Please add a short admin edit note.");
+    $("editAdminNote").focus();
+    return;
+  }
+
+  const shipping = $("editFulfillment").value === "J&T Express shipping";
+  const calc = calculateEditedOrder();
+
+  if(shipping && editingOrder.payment_method === "Cash on Pick-up"){
+    showToast("Cash-on-pick-up orders cannot be changed to J&T shipping.");
+    return;
+  }
+
+  if(shipping){
+    if(!$("editShippingAddress").value.trim() ||
+       !$("editShippingCity").value.trim() ||
+       !$("editShippingProvince").value.trim() ||
+       !$("editDestinationZone").value){
+      showToast("Complete the J&T shipping details first.");
+      return;
+    }
+
+    if(!calc.shippingRateAvailable){
+      showToast("No J&T rate is available for this edited order.");
+      return;
+    }
+  }
+
+  const payloadItems = editItems.map(item=>({
+    product_id:item.product_id,
+    variant:item.variant || "",
+    quantity:Number(item.quantity)
+  }));
+
+  const button = $("saveEditBtn");
+  button.disabled = true;
+  button.textContent = "Saving…";
+
+  try{
+    const {data,error} = await sb.rpc("admin_update_merch_order",{
+      p_order_id:editingOrder.id,
+      p_full_name:$("editFullName").value.trim(),
+      p_program:$("editProgram").value.trim(),
+      p_email:$("editEmail").value.trim(),
+      p_mobile:$("editMobile").value.trim(),
+      p_campus:$("editCampus").value.trim(),
+      p_fulfillment:$("editFulfillment").value,
+      p_shipping_address:shipping ? $("editShippingAddress").value.trim() : "",
+      p_shipping_city:shipping ? $("editShippingCity").value.trim() : "",
+      p_shipping_province:shipping ? $("editShippingProvince").value.trim() : "",
+      p_shipping_postal:shipping ? $("editShippingPostal").value.trim() : "",
+      p_destination_zone:shipping ? $("editDestinationZone").value : "",
+      p_notes:$("editBuyerNotes").value.trim(),
+      p_items:payloadItems,
+      p_edit_note:editNote
+    });
+
+    if(error) throw error;
+
+    const result = typeof data === "string" ? {} : (data || {});
+    closeEditOrder();
+    await loadOrders();
+
+    if(result.payment_reset){
+      showToast(`Order updated • ${peso(result.amount_difference)} additional payment due`);
+    } else if(Number(result.refund_or_credit_due || 0) > 0){
+      showToast(`Order updated • ${peso(result.refund_or_credit_due)} refund/credit to review`);
+    } else {
+      showToast("Order updated successfully");
+    }
+  }catch(error){
+    console.error(error);
+    showToast(error.message || "Could not save the order edit.");
+  }finally{
+    button.disabled = false;
+    button.textContent = "Save changes";
+  }
+}
+
+$("editOrderForm").addEventListener("submit",saveEditedOrder);
+$("editFulfillment").addEventListener("change",toggleEditShipping);
+$("editDestinationZone").addEventListener("change",recalculateEditTotals);
+$("addEditItemBtn").addEventListener("click",addEditItem);
+$("closeEditModalBtn").addEventListener("click",closeEditOrder);
+$("cancelEditBtn").addEventListener("click",closeEditOrder);
+document.querySelector("[data-close-edit]").addEventListener("click",closeEditOrder);
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape" && !$("editOrderModal").hidden) closeEditOrder();
+});
+
+/* ------------------------------
+   CSV EXPORT
+------------------------------ */
+
 function exportCSV() {
   const rows = filteredOrders();
 
@@ -310,5 +777,10 @@ function escAttr(value) {
 
 window.updateStatus = updateStatus;
 window.viewProof = viewProof;
+window.openEditOrder = openEditOrder;
+window.editItemProductChanged = editItemProductChanged;
+window.editItemVariantChanged = editItemVariantChanged;
+window.editItemQtyChanged = editItemQtyChanged;
+window.removeEditItem = removeEditItem;
 
 guardDashboard();

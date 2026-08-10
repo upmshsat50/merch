@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=League+Spartan:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=20260810-8">
+  <link rel="stylesheet" href="admin.css?v=20260810-11">
 </head>
 <body class="dashboard-page">
   <div id="dashboardLoading" class="dashboard-loading">
@@ -90,10 +90,119 @@
     </main>
   </div>
 
+
+  <div class="admin-modal" id="editOrderModal" hidden>
+    <div class="admin-modal-backdrop" data-close-edit></div>
+    <section class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="editOrderTitle">
+      <div class="admin-modal-head">
+        <div>
+          <p class="eyebrow">ADMIN ORDER EDIT</p>
+          <h2 id="editOrderTitle">Edit order</h2>
+          <p class="muted">Reference: <strong id="editOrderRef"></strong></p>
+        </div>
+        <button type="button" class="modal-close-btn" id="closeEditModalBtn" aria-label="Close">×</button>
+      </div>
+
+      <form id="editOrderForm">
+        <div class="edit-section">
+          <div class="edit-section-head">
+            <div>
+              <h3>Customer details</h3>
+              <p>Edit only when requested or needed for fulfillment.</p>
+            </div>
+            <span id="editPaymentBadge" class="edit-payment-badge"></span>
+          </div>
+
+          <div class="edit-form-grid">
+            <label>Full name<input id="editFullName" required></label>
+            <label>Program / affiliation<input id="editProgram" required></label>
+            <label>Email<input id="editEmail" required type="email"></label>
+            <label>Mobile number<input id="editMobile" required></label>
+            <label>Campus / affiliation<input id="editCampus" required></label>
+            <label>Fulfillment
+              <select id="editFulfillment" required>
+                <option value="Campus pick-up">Campus pick-up / distribution — Palo</option>
+                <option value="J&T Express shipping">J&amp;T Express nationwide shipping</option>
+              </select>
+            </label>
+          </div>
+
+          <div id="editShippingFields" class="edit-shipping-fields" hidden>
+            <div class="edit-form-grid">
+              <label class="wide">House / street / barangay<input id="editShippingAddress"></label>
+              <label>City / municipality<input id="editShippingCity"></label>
+              <label>Province<input id="editShippingProvince"></label>
+              <label>Postal code<input id="editShippingPostal"></label>
+              <label>J&amp;T destination zone
+                <select id="editDestinationZone">
+                  <option value="">Select</option>
+                  <option value="Visayas">Visayas</option>
+                  <option value="Metro Manila">Metro Manila</option>
+                  <option value="Luzon">Luzon</option>
+                  <option value="Mindanao">Mindanao</option>
+                  <option value="Island">Island / special island zone</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <label class="edit-notes-label">Buyer notes<textarea id="editBuyerNotes" rows="3"></textarea></label>
+        </div>
+
+        <div class="edit-section">
+          <div class="edit-section-head">
+            <div>
+              <h3>Order items</h3>
+              <p>Change the product/design, shirt size, or quantity. Lanyard type is changed through the Product / Design selector.</p>
+            </div>
+            <button type="button" class="ghost-btn" id="addEditItemBtn">+ Add item</button>
+          </div>
+          <div id="editItemsList" class="edit-items-list"></div>
+        </div>
+
+        <div class="edit-section">
+          <div class="edit-section-head">
+            <div>
+              <h3>Total after edit</h3>
+              <p>Prices, parcel weight, and J&amp;T shipping are recalculated automatically.</p>
+            </div>
+          </div>
+
+          <div class="edit-total-grid">
+            <div><span>Previous total</span><strong id="editPreviousTotal">₱0</strong></div>
+            <div><span>New total</span><strong id="editNewTotal">₱0</strong></div>
+            <div><span>Difference</span><strong id="editDifference">No change</strong></div>
+          </div>
+
+          <div id="editShippingEstimate" class="edit-info-line"></div>
+          <div id="editPaymentImpact" class="edit-payment-impact"></div>
+        </div>
+
+        <div class="edit-section">
+          <label class="edit-notes-label">
+            Admin edit note
+            <textarea id="editAdminNote" rows="3" required placeholder="Example: Buyer requested change from SHS lanyard to Medicine lanyard via Messenger."></textarea>
+            <small>This is saved in the order edit history for your team.</small>
+          </label>
+
+          <div class="edit-history-wrap">
+            <h4>Edit history</h4>
+            <div id="editHistory" class="edit-history"><span class="muted">No previous edits.</span></div>
+          </div>
+        </div>
+
+        <div class="admin-modal-actions">
+          <button type="button" class="ghost-btn" id="cancelEditBtn">Cancel</button>
+          <button type="submit" class="primary-btn" id="saveEditBtn">Save changes</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js?v=20260810-8"></script>
-  <script src="admin-dashboard.js?v=20260810-8"></script>
+  <script src="config.js?v=20260810-11"></script>
+  <script src="admin-dashboard.js?v=20260810-11"></script>
 </body>
 </html>

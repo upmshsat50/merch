@@ -252,3 +252,292 @@ td{font-size:.76rem}
   font-size:.66rem;
   font-weight:700
 }
+
+
+/* V11 — admin order editing */
+.edit-order-btn{
+  display:block;
+  margin-top:8px;
+  padding:6px 8px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#fff;
+  color:var(--maroon);
+  font-size:.66rem;
+  font-weight:800
+}
+.edit-order-btn:hover{background:var(--cream)}
+.admin-modal{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  display:grid;
+  place-items:center;
+  padding:20px
+}
+.admin-modal[hidden]{display:none!important}
+.admin-modal-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(20,14,16,.62);
+  backdrop-filter:blur(4px)
+}
+.admin-modal-card{
+  position:relative;
+  z-index:1;
+  width:min(980px,100%);
+  max-height:92dvh;
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 30px 100px rgba(0,0,0,.24)
+}
+.admin-modal-head{
+  position:sticky;
+  top:0;
+  z-index:5;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  padding:22px 24px 18px;
+  border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(12px)
+}
+.admin-modal-head h2{
+  margin:0;
+  font-family:"League Spartan";
+  font-size:2.5rem;
+  line-height:1
+}
+.admin-modal-head .muted{margin:6px 0 0;font-size:.74rem}
+.modal-close-btn{
+  width:38px;
+  height:38px;
+  border:1px solid var(--line);
+  border-radius:50%;
+  background:#fff;
+  font-size:1.5rem;
+  line-height:1
+}
+.edit-section{
+  padding:22px 24px;
+  border-bottom:1px solid var(--line)
+}
+.edit-section-head{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+  margin-bottom:16px
+}
+.edit-section-head h3{
+  margin:0;
+  font-size:1rem
+}
+.edit-section-head p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:.72rem;
+  line-height:1.45
+}
+.edit-payment-badge{
+  display:inline-flex;
+  align-items:center;
+  min-height:30px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:var(--cream);
+  color:var(--maroon);
+  font-size:.67rem;
+  font-weight:800;
+  white-space:nowrap
+}
+.edit-form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px
+}
+.edit-form-grid .wide{grid-column:1/-1}
+.edit-shipping-fields{
+  margin-top:14px;
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#faf8f5
+}
+.edit-notes-label{
+  margin-top:14px
+}
+.edit-notes-label textarea{
+  width:100%;
+  resize:vertical;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:11px 12px;
+  color:var(--ink);
+  font:inherit
+}
+.edit-notes-label textarea:focus{
+  outline:2px solid rgba(141,21,58,.12);
+  border-color:var(--maroon)
+}
+.edit-notes-label small{
+  color:var(--muted);
+  font-size:.66rem;
+  font-weight:500
+}
+.edit-items-list{display:grid;gap:10px}
+.edit-empty-items{
+  padding:24px;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  text-align:center;
+  color:var(--muted);
+  font-size:.74rem
+}
+.edit-item-row{
+  display:grid;
+  grid-template-columns:minmax(250px,2fr) minmax(115px,.8fr) 80px 100px auto;
+  gap:10px;
+  align-items:end;
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:#fcfbf9
+}
+.edit-line-total{
+  min-height:43px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center
+}
+.edit-line-total span{
+  color:var(--muted);
+  font-size:.62rem
+}
+.edit-line-total strong{
+  font-size:.82rem;
+  margin-top:2px
+}
+.remove-edit-item{
+  min-height:43px;
+  border:1px solid #edd2d8;
+  border-radius:9px;
+  background:#fff;
+  color:#a32748;
+  font-size:.68rem;
+  font-weight:800
+}
+.edit-total-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px
+}
+.edit-total-grid>div{
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#faf8f5
+}
+.edit-total-grid span{
+  display:block;
+  color:var(--muted);
+  font-size:.65rem
+}
+.edit-total-grid strong{
+  display:block;
+  margin-top:4px;
+  font-family:"League Spartan";
+  font-size:1.45rem
+}
+#editDifference[data-type="increase"]{color:#a32748}
+#editDifference[data-type="decrease"]{color:var(--forest)}
+#editDifference[data-type="warning"]{color:#9b6500}
+.edit-info-line{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:.7rem
+}
+.edit-payment-impact{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:10px;
+  font-size:.7rem;
+  line-height:1.45
+}
+.edit-payment-impact.warning{
+  background:#fff5dc;
+  color:#7a5200;
+  border:1px solid #f0d18b
+}
+.edit-payment-impact.refund{
+  background:#edf7f1;
+  color:#155940;
+  border:1px solid #c9e4d6
+}
+.edit-payment-impact.same{
+  background:#f6f4f1;
+  color:var(--muted);
+  border:1px solid var(--line)
+}
+.edit-history-wrap{
+  margin-top:18px
+}
+.edit-history-wrap h4{
+  margin:0 0 8px;
+  font-size:.78rem
+}
+.edit-history{
+  display:grid;
+  gap:8px
+}
+.edit-history-entry{
+  padding:11px 12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#faf8f5
+}
+.edit-history-entry>div{
+  display:flex;
+  justify-content:space-between;
+  gap:12px
+}
+.edit-history-entry strong{font-size:.7rem}
+.edit-history-entry span,.edit-history-entry small{
+  color:var(--muted);
+  font-size:.64rem
+}
+.edit-history-entry p{
+  margin:6px 0;
+  font-size:.72rem;
+  line-height:1.4
+}
+.admin-modal-actions{
+  position:sticky;
+  bottom:0;
+  z-index:5;
+  display:flex;
+  justify-content:flex-end;
+  gap:9px;
+  padding:16px 24px;
+  border-top:1px solid var(--line);
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(12px)
+}
+.admin-modal-actions button:disabled{opacity:.6;cursor:wait}
+@media(max-width:760px){
+  .admin-modal{padding:8px}
+  .admin-modal-card{max-height:96dvh;border-radius:16px}
+  .admin-modal-head,.edit-section{padding-left:16px;padding-right:16px}
+  .edit-form-grid,.edit-total-grid{grid-template-columns:1fr}
+  .edit-item-row{
+    grid-template-columns:1fr 1fr;
+  }
+  .edit-product-label{grid-column:1/-1}
+  .remove-edit-item{grid-column:1/-1}
+  .edit-section-head{display:block}
+  .edit-section-head .ghost-btn,.edit-payment-badge{margin-top:10px}
+}
