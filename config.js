@@ -5,9 +5,9 @@ window.MERCH_CONFIG = {
   supabasePublishableKey: "",
 
   // Payment details — replace before launch.
-  gcashName: "UPM SHS AT 50",
-  gcashNumber: "TO BE UPDATED",
-  gcashQrImage: "assets/gcash-qr-placeholder.svg",
+  gcashName: "GCash / InstaPay QR",
+  gcashNumber: "Scan the QR code to pay",
+  gcashQrImage: "assets/gcash-qr.jpeg",
 
   preorderDeadline: "To be announced",
   pickupNote: "Nationwide shipping available. Campus claiming/distribution details may also be announced by the organizing team.",

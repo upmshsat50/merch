@@ -153,3 +153,8 @@ Version 3 uses the clean August 9, 2026 Salubong 2026 brochure exports supplied 
 - Shirts: ₱350 each
 - SHS, Medicine, Nursing, and Midwifery lanyards: ₱100 each
 - Nationwide shipping is highlighted on the public storefront
+
+
+## GCash QR updated
+
+Version 4 includes the GCash/InstaPay QR supplied by the merch team at `assets/gcash-qr.jpeg`. The public payment section and checkout use this image.
