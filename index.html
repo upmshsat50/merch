@@ -82,12 +82,12 @@
         <h2>Pay, upload, done.</h2>
         <p>For GCash orders, the buyer can upload payment proof directly during checkout. The proof is stored privately and can only be opened by authorized merch admins.</p>
         <div class="payment-details">
-          <div><span>GCash account</span><strong id="gcashName">UPM SHS AT 50</strong></div>
-          <div><span>GCash number</span><strong id="gcashNumber">TO BE UPDATED</strong></div>
+          <div><span>Payment</span><strong id="gcashName">GCash / InstaPay QR</strong></div>
+          <div><span>Instruction</span><strong id="gcashNumber">Scan the QR code to pay</strong></div>
         </div>
       </div>
       <div class="qr-card">
-        <img id="gcashQr" src="assets/gcash-qr-placeholder.svg" alt="GCash QR code">
+        <img id="gcashQr" src="assets/gcash-qr.jpeg" alt="GCash / InstaPay QR code">
         <p>Replace the placeholder QR before launch.</p>
       </div>
     </section>
@@ -182,7 +182,7 @@
             <label class="radio-card"><input type="radio" name="paymentMethod" value="To be coordinated"><span><strong>To be coordinated</strong><small>For organizer-approved arrangements</small></span></label>
           </div>
           <div class="proof-area" id="proofArea">
-            <div class="inline-gcash"><strong id="checkoutGcashName">UPM SHS AT 50</strong><span id="checkoutGcashNumber">TO BE UPDATED</span></div>
+            <div class="inline-gcash"><strong id="checkoutGcashName">GCash / InstaPay QR</strong><span id="checkoutGcashNumber">Scan the QR code to pay</span></div>
             <label class="upload-box">
               <input id="proofInput" type="file" name="proof" accept="image/jpeg,image/png,image/webp,application/pdf">
               <span class="upload-icon">↑</span>
