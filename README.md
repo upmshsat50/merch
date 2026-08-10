@@ -1,44 +1,40 @@
-# UPM SHS at 50 — Salubong 2026 Merch Store V7
+# UPM SHS at 50 — Salubong 2026 Merch Store V8
 
-This package is the login-fixed version.
+This version separates the admin login and dashboard into two pages.
 
-## What is already fixed
-- Supabase Project URL is already in `config.js`
-- Supabase browser publishable key is already in `config.js`
-- Public store and admin portal both use the same Supabase project
-- JavaScript files have cache-busting versions so GitHub Pages is less likely to keep the old blank `config.js`
-- Admin login verifies the authenticated user with Supabase Auth
-- Admin authorization checks the user's own row in `admin_users`
-- Admin page no longer shows setup/developer instructions to users
-- Password show/hide control added
+## Admin flow
 
-## If your database schema is already installed
-Run `ADMIN-LOGIN-REPAIR.sql` once in Supabase SQL Editor.
+- `admin.html` — login page only
+- `admin-dashboard.html` — protected dashboard
 
-Then create the four users in:
-Authentication > Users > Add user
+After a successful login, the browser automatically redirects:
 
-Use a different password for each person.
+`admin.html` → `admin-dashboard.html`
 
-After creating the users, edit and run:
-`ADMIN-ACCESS-SETUP.sql`
+If somebody opens `admin-dashboard.html` without a valid authorized session, the page automatically sends them back to `admin.html`.
 
-## If this is a fresh Supabase database
-Run:
-`supabase-schema.sql`
+If an admin is already logged in and opens `admin.html`, the site automatically sends them to `admin-dashboard.html`.
 
-Then create your four Auth users and run:
-`ADMIN-ACCESS-SETUP.sql`
+Signing out sends the user back to `admin.html`.
 
-## Upload to GitHub
-Replace your current website files with everything in this V7 folder, especially:
-- `config.js`
-- `admin.js`
-- `admin.html`
-- `app.js`
-- `index.html`
+## Files for admin access
 
-After GitHub Pages deploys, open the admin page again. The new query-string versions on the JS files help avoid loading the older cached configuration.
+- `ADMIN-LOGIN-REPAIR.sql` — safe database/policy repair
+- `ADMIN-ACCESS-SETUP.sql` — authorize the four admin Auth users
 
-## Important
-The publishable key in `config.js` is a browser/client key. Never add a Supabase secret key or service-role key to GitHub.
+## Deployment
+
+Replace the old website files in GitHub with this entire V8 folder.
+
+Important new files:
+- `admin-login.js`
+- `admin-dashboard.html`
+- `admin-dashboard.js`
+
+The old `admin.js` is intentionally removed.
+
+## Supabase
+
+The browser-side Supabase Project URL and Publishable Key already remain in `config.js`.
+
+Never add a Supabase secret/service-role key to the public GitHub repository.

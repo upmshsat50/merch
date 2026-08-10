@@ -1,73 +1,56 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#8d153a">
-  <title>Merch Admin | UPM SHS at 50</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>Admin Login | UPM SHS at 50 Merch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=League+Spartan:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="admin.css?v=20260810-8">
 </head>
-<body>
-  <div id="loginView" class="login-shell">
+<body class="login-page">
+  <main class="login-shell">
     <section class="login-card">
-      <a href="index.html" class="brand"><img class="brand-logo" src="assets/upm-shs-at-50-logo.jpg" alt="UPM SHS at 50 logo"><span><strong>UPM SHS at 50</strong><small>Merch Admin</small></span></a>
-      <p class="eyebrow">AUTHORIZED ACCESS</p><h1>Merch order tracker</h1>
-      <p class="muted">Sign in with your authorized merch admin account.</p>
-      <form id="loginForm">
-        <label>Email<input required type="email" id="email" autocomplete="username" placeholder="admin@up.edu.ph"></label>
-        <label>Password
+      <a href="index.html" class="brand login-brand" aria-label="Back to merch store">
+        <img class="brand-logo" src="assets/upm-shs-at-50-logo.jpg" alt="UPM SHS at 50">
+        <span>
+          <strong>UPM SHS at 50</strong>
+          <small>Merch Admin</small>
+        </span>
+      </a>
+
+      <div class="login-copy">
+        <p class="eyebrow">AUTHORIZED ACCESS</p>
+        <h1>Sign in to the merch dashboard</h1>
+        <p class="muted">Use your authorized admin email and password.</p>
+      </div>
+
+      <form id="loginForm" class="login-form" novalidate>
+        <label>
+          Email
+          <input required type="email" id="email" autocomplete="username" placeholder="name@up.edu.ph">
+        </label>
+
+        <label>
+          Password
           <div class="password-field">
             <input required type="password" id="password" autocomplete="current-password">
             <button type="button" id="togglePassword" class="password-toggle" aria-label="Show password">Show</button>
           </div>
         </label>
-        <button class="primary-btn" type="submit">Sign in</button>
-        <p id="loginMessage" class="form-message"></p>
+
+        <button class="primary-btn login-submit" id="loginButton" type="submit">Sign in</button>
+        <p id="loginMessage" class="form-message" aria-live="polite"></p>
       </form>
+
+      <a class="back-store" href="index.html">← Back to merch store</a>
     </section>
-  </div>
+  </main>
 
-  <div id="dashboardView" hidden>
-    <header class="admin-header">
-      <a href="index.html" class="brand"><img class="brand-logo" src="assets/upm-shs-at-50-logo.jpg" alt="UPM SHS at 50 logo"><span><strong>UPM SHS at 50</strong><small>Merch Admin</small></span></a>
-      <div class="header-actions"><span id="adminEmail"></span><button id="logoutBtn" class="ghost-btn">Sign out</button></div>
-    </header>
-
-    <main class="admin-main">
-      <div class="page-title">
-        <div><p class="eyebrow">SALUBONG 2026</p><h1>Pre-order dashboard</h1><p class="muted">Review payments, production status, and claiming progress.</p></div>
-        <div class="top-actions"><button id="refreshBtn" class="ghost-btn">Refresh</button><button id="exportBtn" class="primary-btn">Export CSV</button></div>
-      </div>
-
-      <section class="stats-grid">
-        <article><span>Total orders</span><strong id="statOrders">0</strong></article>
-        <article><span>Gross pre-orders</span><strong id="statSales">₱0</strong></article>
-        <article><span>Payment pending</span><strong id="statPending">0</strong></article>
-        <article><span>Ready for claim</span><strong id="statReady">0</strong></article>
-      </section>
-
-      <section class="toolbar">
-        <input id="searchInput" type="search" placeholder="Search name, reference, email, mobile…">
-        <select id="paymentFilter"><option value="">All payment statuses</option><option>Pending</option><option>Verified</option><option>Rejected</option><option>Refunded</option></select>
-        <select id="orderFilter"><option value="">All order statuses</option><option>New</option><option>Confirmed</option><option>For Production</option><option>Ready for Claim</option><option>Completed</option><option>Cancelled</option></select>
-      </section>
-
-      <section class="table-card">
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Shipping</th><th>Total</th><th>Payment</th><th>Order status</th><th>Proof</th><th>Date</th></tr></thead>
-            <tbody id="ordersBody"></tbody>
-          </table>
-        </div>
-        <div id="emptyState" class="empty-state" hidden>No orders match your filters.</div>
-      </section>
-    </main>
-  </div>
-
-  <div class="toast" id="toast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js?v=20260810-7"></script>
-  <script src="admin.js?v=20260810-7"></script>
+  <script src="config.js?v=20260810-8"></script>
+  <script src="admin-login.js?v=20260810-8"></script>
 </body>
 </html>
