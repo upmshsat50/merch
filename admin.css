@@ -712,3 +712,146 @@ td{font-size:.76rem}
   .expense-description{grid-column:1/-1}
   .expense-form button{grid-column:1/-1}
 }
+
+
+/* V13 — Legacy / Backlogs */
+.legacy-stats-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:14px
+}
+.legacy-stats-grid article{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fff
+}
+.legacy-stats-grid span{
+  display:block;
+  color:var(--muted);
+  font-size:.68rem
+}
+.legacy-stats-grid strong{
+  display:block;
+  margin-top:5px;
+  font-family:"League Spartan";
+  color:var(--maroon);
+  font-size:1.75rem
+}
+.legacy-stats-grid small{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:.62rem;
+  line-height:1.35
+}
+.legacy-fund-card,
+.legacy-inventory-card,
+.legacy-price-card{
+  margin-bottom:14px;
+  border:1px solid var(--line);
+  border-radius:17px;
+  background:#fff;
+  overflow:hidden
+}
+.legacy-settings-form,
+.legacy-cash-form,
+.legacy-inventory-form{
+  display:grid;
+  gap:8px;
+  align-items:end;
+  padding:15px 18px;
+  border-bottom:1px solid var(--line);
+  background:#faf8f5
+}
+.legacy-settings-form{
+  grid-template-columns:160px 180px 1fr auto
+}
+.legacy-cash-form{
+  grid-template-columns:190px 1fr 140px 150px auto
+}
+.legacy-inventory-form{
+  grid-template-columns:minmax(190px,1.5fr) 145px 95px 95px 125px 115px 150px 110px minmax(170px,1fr) auto
+}
+.legacy-settings-form label,
+.legacy-cash-form label,
+.legacy-inventory-form label{
+  min-width:0;
+  font-size:.65rem
+}
+.legacy-settings-form input,
+.legacy-cash-form input,
+.legacy-cash-form select,
+.legacy-inventory-form input{
+  padding:8px 9px
+}
+.legacy-grid-two{
+  display:grid;
+  grid-template-columns:1.08fr .92fr;
+  gap:14px;
+  margin-bottom:14px
+}
+.legacy-collectibles-table{min-width:980px}
+.legacy-obligations-table{min-width:720px}
+.legacy-inventory-table{min-width:1120px}
+.legacy-price-table{min-width:650px}
+.legacy-mini-table table{min-width:760px}
+.legacy-inflow{color:var(--forest)}
+.legacy-outflow{color:#a32748}
+.legacy-inline-num{width:70px;padding:6px 7px}
+.legacy-inline-price{width:95px;padding:6px 7px}
+.legacy-row-actions{
+  display:flex;
+  gap:6px;
+  white-space:nowrap
+}
+.legacy-row-actions button{padding:7px 9px;font-size:.65rem}
+.legacy-collect-payment{
+  display:flex;
+  gap:6px;
+  min-width:150px
+}
+.legacy-collect-payment input{
+  width:82px;
+  padding:7px 8px
+}
+.legacy-collect-payment button{
+  padding:7px 9px;
+  font-size:.65rem
+}
+.inventory-reminder{
+  margin:14px 18px 0;
+  padding:11px 13px;
+  border:1px solid #f0d18b;
+  border-radius:10px;
+  background:#fff5dc;
+  color:#765200;
+  font-size:.7rem;
+  line-height:1.45
+}
+@media(max-width:1180px){
+  .legacy-settings-form{grid-template-columns:1fr 1fr}
+  .legacy-settings-form label:nth-child(3){grid-column:1/-1}
+  .legacy-cash-form{grid-template-columns:1fr 1fr 1fr}
+  .legacy-cash-description{grid-column:span 2}
+  .legacy-inventory-form{grid-template-columns:repeat(4,1fr)}
+  .legacy-product-field,.legacy-inventory-notes{grid-column:span 2}
+}
+@media(max-width:900px){
+  .legacy-stats-grid{grid-template-columns:1fr 1fr}
+  .legacy-grid-two{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .legacy-stats-grid{grid-template-columns:1fr}
+  .legacy-settings-form,
+  .legacy-cash-form,
+  .legacy-inventory-form{grid-template-columns:1fr 1fr}
+  .legacy-settings-form label:nth-child(3),
+  .legacy-cash-description,
+  .legacy-product-field,
+  .legacy-inventory-notes{grid-column:1/-1}
+  .legacy-settings-form button,
+  .legacy-cash-form button,
+  .legacy-inventory-form button{grid-column:1/-1}
+}

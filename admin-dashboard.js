@@ -19,6 +19,12 @@ let editItems = [];
 let productionProgress = [];
 let orderFinance = [];
 let expenses = [];
+let legacySettings = null;
+let legacyPrices = [];
+let legacyInventory = [];
+let legacyCollectibles = [];
+let legacyObligations = [];
+let legacyCashEntries = [];
 
 const $ = id => document.getElementById(id);
 const peso = n => "₱" + Number(n || 0).toLocaleString("en-PH", {maximumFractionDigits:2});
@@ -101,6 +107,7 @@ async function guardDashboard() {
   await loadCatalog();
   await loadOrders();
   await loadOperationsData();
+  await loadLegacyData();
 }
 
 async function loadCatalog(){
@@ -146,6 +153,7 @@ $("refreshBtn").addEventListener("click", async () => {
   await loadCatalog();
   await loadOrders();
   await loadOperationsData();
+  await loadLegacyData();
 });
 $("searchInput").addEventListener("input", renderOrders);
 $("paymentFilter").addEventListener("change", renderOrders);
@@ -739,9 +747,11 @@ document.querySelectorAll(".admin-tab").forEach(button=>{
     $("ordersPanel").hidden = tab!=="orders";
     $("productionPanel").hidden = tab!=="production";
     $("financePanel").hidden = tab!=="finance";
+    $("legacyPanel").hidden = tab!=="legacy";
 
     if(tab==="production") renderProductionSummary();
     if(tab==="finance") renderFinance();
+    if(tab==="legacy") renderLegacy();
   });
 });
 
@@ -1183,6 +1193,485 @@ $("expenseDate").value = todayISO();
 window.saveProductionProgress = saveProductionProgress;
 window.updateExpenseStatus = updateExpenseStatus;
 window.deleteExpense = deleteExpense;
+
+
+/* ------------------------------
+   LEGACY / BACKLOGS
+------------------------------ */
+
+$("refreshLegacyBtn").addEventListener("click", async ()=>{
+  await loadLegacyData();
+  showToast("Legacy/backlogs refreshed");
+});
+
+async function loadLegacyData(){
+  const [
+    settingsRes,
+    priceRes,
+    inventoryRes,
+    collectiblesRes,
+    obligationsRes,
+    cashRes
+  ] = await Promise.all([
+    sb.from("merch_legacy_settings").select("*").eq("id","legacy_2026").maybeSingle(),
+    sb.from("merch_legacy_price_list").select("*").order("product_name"),
+    sb.from("merch_legacy_inventory").select("*").order("product_name").order("variant"),
+    sb.from("merch_legacy_collectibles").select("*").order("person_name"),
+    sb.from("merch_legacy_obligations").select("*").order("category").order("recipient_name"),
+    sb.from("merch_legacy_cash_entries").select("*").order("entry_date",{ascending:false}).order("created_at",{ascending:false})
+  ]);
+
+  const firstError = [
+    settingsRes.error,priceRes.error,inventoryRes.error,
+    collectiblesRes.error,obligationsRes.error,cashRes.error
+  ].find(Boolean);
+
+  if(firstError){
+    console.error(firstError);
+    return;
+  }
+
+  legacySettings = settingsRes.data || {
+    id:"legacy_2026",
+    opening_date:"2026-08-06",
+    opening_cash:69360,
+    notes:""
+  };
+  legacyPrices = priceRes.data || [];
+  legacyInventory = inventoryRes.data || [];
+  legacyCollectibles = collectiblesRes.data || [];
+  legacyObligations = obligationsRes.data || [];
+  legacyCashEntries = cashRes.data || [];
+
+  renderLegacy();
+}
+
+function legacyCashEffect(entry){
+  const amount = Number(entry.amount || 0);
+  return entry.direction === "outflow" ? -amount : amount;
+}
+
+function legacySnapshot(){
+  const opening = Number(legacySettings?.opening_cash || 0);
+  const cashMovement = legacyCashEntries.reduce((sum,e)=>sum+legacyCashEffect(e),0);
+  const cashBalance = opening + cashMovement;
+
+  const collectibleBalance = legacyCollectibles.reduce((sum,c)=>
+    sum + Math.max(Number(c.total_due||0)-Number(c.amount_collected||0),0),0
+  );
+
+  const pendingGiveawayUnits = legacyObligations
+    .filter(o=>!["Released","Cancelled"].includes(o.status))
+    .reduce((sum,o)=>sum+Number(o.quantity||0),0);
+
+  const inventoryUnits = legacyInventory.reduce((sum,i)=>sum+Number(i.qty_on_hand||0),0);
+  const inventoryAvailableUnits = legacyInventory.reduce((sum,i)=>
+    sum+Math.max(Number(i.qty_on_hand||0)-Number(i.reserved_qty||0),0),0
+  );
+  const inventoryAvailableValue = legacyInventory.reduce((sum,i)=>{
+    const available = Math.max(Number(i.qty_on_hand||0)-Number(i.reserved_qty||0),0);
+    return sum + available*Number(i.selling_price||0);
+  },0);
+
+  return {
+    opening,cashBalance,collectibleBalance,pendingGiveawayUnits,
+    inventoryUnits,inventoryAvailableUnits,inventoryAvailableValue
+  };
+}
+
+function renderLegacy(){
+  if(!$("legacyOpeningCash")) return;
+
+  const s = legacySnapshot();
+  $("legacyOpeningCash").textContent = peso(s.opening);
+  $("legacyCashBalance").textContent = peso(s.cashBalance);
+  $("legacyCollectiblesBalance").textContent = peso(s.collectibleBalance);
+  $("legacyGiveawayUnits").textContent = s.pendingGiveawayUnits.toLocaleString();
+  $("legacyInventoryUnits").textContent = s.inventoryUnits.toLocaleString();
+  $("legacyInventoryValue").textContent = peso(s.inventoryAvailableValue);
+
+  $("legacyOpeningDate").value = legacySettings?.opening_date || "2026-08-06";
+  $("legacyOpeningCashInput").value = Number(legacySettings?.opening_cash || 69360);
+  $("legacySettingsNotes").value = legacySettings?.notes || "";
+
+  $("legacyProductList").innerHTML = legacyPrices
+    .map(p=>`<option value="${esc(p.product_name)}"></option>`)
+    .join("");
+
+  renderLegacyPrices();
+  renderLegacyInventory();
+  renderLegacyCollectibles();
+  renderLegacyObligations();
+  renderLegacyCashEntries();
+}
+
+function legacyPriceForProduct(name){
+  return legacyPrices.find(p=>p.product_name.toLowerCase()===String(name||"").trim().toLowerCase());
+}
+
+$("legacyInventoryProduct").addEventListener("change",()=>{
+  const p = legacyPriceForProduct($("legacyInventoryProduct").value);
+  if(p) $("legacyInventoryPrice").value = Number(p.selling_price || 0);
+});
+
+$("legacySettingsForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const payload = {
+    id:"legacy_2026",
+    opening_date:$("legacyOpeningDate").value,
+    opening_cash:Number($("legacyOpeningCashInput").value),
+    notes:$("legacySettingsNotes").value.trim(),
+    updated_at:new Date().toISOString()
+  };
+
+  const {data,error} = await sb
+    .from("merch_legacy_settings")
+    .upsert(payload,{onConflict:"id"})
+    .select()
+    .single();
+
+  if(error){
+    console.error(error);
+    showToast("Could not save legacy opening position.");
+    return;
+  }
+
+  legacySettings = data;
+  renderLegacy();
+  showToast("Legacy opening position saved");
+});
+
+$("legacyCashDate").value = todayISO();
+
+$("legacyCashForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const type = $("legacyCashType").value;
+  const outflowTypes = ["Legacy Expense","Transfer to Current Campaign","Refund","Other Outflow"];
+  const payload = {
+    entry_date:$("legacyCashDate").value,
+    entry_type:type,
+    direction:outflowTypes.includes(type) ? "outflow" : "inflow",
+    description:$("legacyCashDescription").value.trim(),
+    amount:Number($("legacyCashAmount").value)
+  };
+
+  const {data,error} = await sb
+    .from("merch_legacy_cash_entries")
+    .insert(payload)
+    .select()
+    .single();
+
+  if(error){
+    console.error(error);
+    showToast("Could not add legacy cash entry.");
+    return;
+  }
+
+  legacyCashEntries.unshift(data);
+  event.currentTarget.reset();
+  $("legacyCashType").value = "Collection";
+  $("legacyCashDate").value = todayISO();
+  renderLegacy();
+  showToast("Legacy cash entry added");
+});
+
+function renderLegacyCashEntries(){
+  $("legacyCashBody").innerHTML = legacyCashEntries.map(e=>{
+    const effect = legacyCashEffect(e);
+    return `
+      <tr>
+        <td>${new Date(`${e.entry_date}T00:00:00`).toLocaleDateString("en-PH")}</td>
+        <td>${esc(e.entry_type)}</td>
+        <td>${esc(e.description)}</td>
+        <td><strong class="${effect<0?"legacy-outflow":"legacy-inflow"}">${effect<0?"−":"+"}${peso(Math.abs(effect))}</strong></td>
+        <td><button type="button" class="expense-delete-btn" onclick="deleteLegacyCashEntry('${e.id}')">Delete</button></td>
+      </tr>`;
+  }).join("");
+}
+
+async function deleteLegacyCashEntry(id){
+  if(!confirm("Delete this legacy cash entry?")) return;
+
+  const {error} = await sb.from("merch_legacy_cash_entries").delete().eq("id",id);
+  if(error){
+    console.error(error);
+    showToast("Could not delete legacy cash entry.");
+    return;
+  }
+
+  legacyCashEntries = legacyCashEntries.filter(e=>e.id!==id);
+  renderLegacy();
+  showToast("Legacy cash entry deleted");
+}
+
+$("legacyInventoryForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const product = $("legacyInventoryProduct").value.trim();
+  const variant = $("legacyInventoryVariant").value.trim();
+  const qty = Number($("legacyInventoryQty").value || 0);
+  const reserved = Number($("legacyInventoryReserved").value || 0);
+
+  if(reserved > qty){
+    showToast("Reserved quantity cannot be greater than stock on hand.");
+    return;
+  }
+
+  const payload = {
+    product_name:product,
+    variant,
+    qty_on_hand:qty,
+    reserved_qty:reserved,
+    selling_price:Number($("legacyInventoryPrice").value || 0),
+    unit_cost:$("legacyInventoryCost").value ? Number($("legacyInventoryCost").value) : null,
+    stock_location:$("legacyInventoryLocation").value.trim(),
+    condition:$("legacyInventoryCondition").value.trim() || "Good",
+    notes:$("legacyInventoryNotes").value.trim(),
+    updated_at:new Date().toISOString()
+  };
+
+  const {data,error} = await sb
+    .from("merch_legacy_inventory")
+    .upsert(payload,{onConflict:"product_name,variant"})
+    .select()
+    .single();
+
+  if(error){
+    console.error(error);
+    showToast("Could not save legacy inventory.");
+    return;
+  }
+
+  const existingIndex = legacyInventory.findIndex(i=>
+    i.product_name===data.product_name && (i.variant||"")===(data.variant||"")
+  );
+  if(existingIndex>=0) legacyInventory[existingIndex]=data;
+  else legacyInventory.push(data);
+
+  event.currentTarget.reset();
+  $("legacyInventoryReserved").value = 0;
+  $("legacyInventoryCondition").value = "Good";
+  renderLegacy();
+  showToast("Legacy stock saved");
+});
+
+function renderLegacyInventory(){
+  $("legacyInventoryEmpty").hidden = legacyInventory.length>0;
+
+  $("legacyInventoryBody").innerHTML = legacyInventory.map(i=>{
+    const available = Math.max(Number(i.qty_on_hand||0)-Number(i.reserved_qty||0),0);
+    const value = available*Number(i.selling_price||0);
+
+    return `
+      <tr>
+        <td><strong>${esc(i.product_name)}</strong></td>
+        <td>${esc(i.variant || "—")}</td>
+        <td><input class="legacy-inline-num" type="number" min="0" value="${Number(i.qty_on_hand||0)}" id="li-q-${i.id}"></td>
+        <td><input class="legacy-inline-num" type="number" min="0" value="${Number(i.reserved_qty||0)}" id="li-r-${i.id}"></td>
+        <td><strong>${available}</strong></td>
+        <td><input class="legacy-inline-price" type="number" min="0" step="0.01" value="${Number(i.selling_price||0)}" id="li-p-${i.id}"></td>
+        <td>${peso(value)}</td>
+        <td>
+          <span>${esc(i.stock_location || "—")}</span>
+          <span class="date-small">${esc(i.condition || "Good")}</span>
+        </td>
+        <td class="legacy-row-actions">
+          <button type="button" class="ghost-btn" onclick="saveLegacyInventoryRow('${i.id}')">Save</button>
+          <button type="button" class="expense-delete-btn" onclick="deleteLegacyInventoryRow('${i.id}')">Delete</button>
+        </td>
+      </tr>`;
+  }).join("");
+}
+
+async function saveLegacyInventoryRow(id){
+  const item = legacyInventory.find(i=>i.id===id);
+  if(!item) return;
+
+  const qty = Number($(`li-q-${id}`).value || 0);
+  const reserved = Number($(`li-r-${id}`).value || 0);
+  const price = Number($(`li-p-${id}`).value || 0);
+
+  if(reserved>qty){
+    showToast("Reserved quantity cannot exceed stock on hand.");
+    return;
+  }
+
+  const {data,error} = await sb
+    .from("merch_legacy_inventory")
+    .update({
+      qty_on_hand:qty,
+      reserved_qty:reserved,
+      selling_price:price,
+      updated_at:new Date().toISOString()
+    })
+    .eq("id",id)
+    .select()
+    .single();
+
+  if(error){
+    console.error(error);
+    showToast("Could not update stock.");
+    return;
+  }
+
+  Object.assign(item,data);
+  renderLegacy();
+  showToast("Legacy stock updated");
+}
+
+async function deleteLegacyInventoryRow(id){
+  if(!confirm("Delete this legacy inventory row?")) return;
+
+  const {error} = await sb.from("merch_legacy_inventory").delete().eq("id",id);
+  if(error){
+    console.error(error);
+    showToast("Could not delete stock row.");
+    return;
+  }
+
+  legacyInventory = legacyInventory.filter(i=>i.id!==id);
+  renderLegacy();
+  showToast("Legacy stock row deleted");
+}
+
+function renderLegacyCollectibles(){
+  $("legacyCollectiblesBody").innerHTML = legacyCollectibles.map(c=>{
+    const due = Number(c.total_due||0);
+    const collected = Number(c.amount_collected||0);
+    const balance = Math.max(due-collected,0);
+
+    return `
+      <tr>
+        <td><strong>${esc(c.person_name)}</strong></td>
+        <td>${esc(c.description)}</td>
+        <td>${peso(due)}</td>
+        <td>${peso(collected)}</td>
+        <td><strong class="${balance>0?"receivable-due":""}">${peso(balance)}</strong></td>
+        <td>
+          ${balance>0 ? `
+          <div class="legacy-collect-payment">
+            <input type="number" min="0.01" step="0.01" max="${balance}" id="lc-pay-${c.id}" placeholder="₱">
+            <button type="button" class="ghost-btn" onclick="recordLegacyCollection('${c.id}')">Record</button>
+          </div>` : "—"}
+        </td>
+        <td>
+          <select class="status-select" onchange="updateLegacyCollectibleStatus('${c.id}',this.value)">
+            ${["Unpaid","Partial","Paid","Waived"].map(s=>`<option ${s===c.status?"selected":""}>${s}</option>`).join("")}
+          </select>
+        </td>
+      </tr>`;
+  }).join("");
+}
+
+async function recordLegacyCollection(id){
+  const item = legacyCollectibles.find(c=>c.id===id);
+  if(!item) return;
+
+  const input = $(`lc-pay-${id}`);
+  const amount = Number(input?.value || 0);
+  const balance = Math.max(Number(item.total_due||0)-Number(item.amount_collected||0),0);
+
+  if(amount<=0 || amount>balance){
+    showToast("Enter a valid collection amount.");
+    return;
+  }
+
+  const newCollected = Number(item.amount_collected||0)+amount;
+  const newStatus = newCollected>=Number(item.total_due||0) ? "Paid" : "Partial";
+
+  const {data,error} = await sb.rpc("record_legacy_collection",{
+    p_collectible_id:id,
+    p_amount:amount,
+    p_entry_date:todayISO()
+  });
+
+  if(error){
+    console.error(error);
+    showToast("Could not record legacy collection.");
+    return;
+  }
+
+  item.amount_collected = newCollected;
+  item.status = newStatus;
+
+  await loadLegacyData();
+  showToast(`Recorded ${peso(amount)} collection`);
+}
+
+async function updateLegacyCollectibleStatus(id,status){
+  const {data,error} = await sb
+    .from("merch_legacy_collectibles")
+    .update({status,updated_at:new Date().toISOString()})
+    .eq("id",id)
+    .select()
+    .single();
+
+  if(error){
+    console.error(error);
+    showToast("Could not update collectible status.");
+    return;
+  }
+
+  const item = legacyCollectibles.find(c=>c.id===id);
+  if(item) Object.assign(item,data);
+  renderLegacy();
+  showToast("Collectible status updated");
+}
+
+function renderLegacyObligations(){
+  $("legacyObligationsBody").innerHTML = legacyObligations.map(o=>`
+    <tr>
+      <td><strong>${esc(o.recipient_name)}</strong>${o.notes ? `<span class="date-small">${esc(o.notes)}</span>` : ""}</td>
+      <td>${esc(o.prize_item)}</td>
+      <td>${Number(o.quantity||1)}</td>
+      <td>${esc(o.category)}</td>
+      <td>
+        <select class="status-select" onchange="updateLegacyObligation('${o.id}',this.value)">
+          ${["Pending","Reserved","Released","Cancelled"].map(s=>`<option ${s===o.status?"selected":""}>${s}</option>`).join("")}
+        </select>
+      </td>
+    </tr>
+  `).join("");
+}
+
+async function updateLegacyObligation(id,status){
+  const {data,error} = await sb
+    .from("merch_legacy_obligations")
+    .update({status,updated_at:new Date().toISOString()})
+    .eq("id",id)
+    .select()
+    .single();
+
+  if(error){
+    console.error(error);
+    showToast("Could not update raffle/giveaway status.");
+    return;
+  }
+
+  const item = legacyObligations.find(o=>o.id===id);
+  if(item) Object.assign(item,data);
+  renderLegacy();
+  showToast("Giveaway status updated");
+}
+
+function renderLegacyPrices(){
+  $("legacyPriceBody").innerHTML = legacyPrices.map(p=>`
+    <tr>
+      <td><strong>${esc(p.product_name)}</strong></td>
+      <td>${peso(p.selling_price)}</td>
+      <td>${esc(p.notes || "")}</td>
+    </tr>
+  `).join("");
+}
+
+window.deleteLegacyCashEntry = deleteLegacyCashEntry;
+window.saveLegacyInventoryRow = saveLegacyInventoryRow;
+window.deleteLegacyInventoryRow = deleteLegacyInventoryRow;
+window.recordLegacyCollection = recordLegacyCollection;
+window.updateLegacyCollectibleStatus = updateLegacyCollectibleStatus;
+window.updateLegacyObligation = updateLegacyObligation;
 
 /* ------------------------------
    CSV EXPORT

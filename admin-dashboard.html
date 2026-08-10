@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=League+Spartan:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=20260810-12">
+  <link rel="stylesheet" href="admin.css?v=20260810-13">
 </head>
 <body class="dashboard-page">
   <div id="dashboardLoading" class="dashboard-loading">
@@ -51,6 +51,7 @@
         <button type="button" class="admin-tab active" data-tab="orders">Orders</button>
         <button type="button" class="admin-tab" data-tab="production">Production</button>
         <button type="button" class="admin-tab" data-tab="finance">Finance</button>
+        <button type="button" class="admin-tab" data-tab="legacy">Legacy / Backlogs</button>
       </nav>
 
       <section id="ordersPanel" class="admin-panel">
@@ -269,6 +270,164 @@
   </div>
 
 
+
+      <section id="legacyPanel" class="admin-panel" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PREVIOUS 50TH ANNIVERSARY MERCH</p>
+            <h2>Legacy inventory & backlogs</h2>
+            <p class="muted">Keep old stocks, collectibles, raffle obligations, and legacy cash separate from the current Salubong 2026 pre-orders.</p>
+          </div>
+          <button id="refreshLegacyBtn" type="button" class="ghost-btn">Refresh legacy</button>
+        </div>
+
+        <section class="legacy-stats-grid">
+          <article><span>Opening cash • Aug 6</span><strong id="legacyOpeningCash">₱69,360</strong><small>Starting legacy fund</small></article>
+          <article><span>Legacy cash after entries</span><strong id="legacyCashBalance">₱0</strong><small>Opening cash + collections/inflows − outflows</small></article>
+          <article><span>Collectibles balance</span><strong id="legacyCollectiblesBalance">₱0</strong><small>Still to be collected</small></article>
+          <article><span>Pending giveaway units</span><strong id="legacyGiveawayUnits">0</strong><small>Raffle + sticker prizes not yet released</small></article>
+          <article><span>Inventory on hand</span><strong id="legacyInventoryUnits">0</strong><small>Enter actual count after inventory</small></article>
+          <article><span>Available stock value</span><strong id="legacyInventoryValue">₱0</strong><small>Available qty × current legacy selling price</small></article>
+        </section>
+
+        <section class="legacy-fund-card">
+          <div class="table-card-head">
+            <div>
+              <h3>Legacy fund position</h3>
+              <p>The ₱3,000 current-lanyard allocation is recorded here as an outflow from the old fund. Keep it from being entered twice in this Legacy section.</p>
+            </div>
+          </div>
+
+          <form id="legacySettingsForm" class="legacy-settings-form">
+            <label>Opening date<input id="legacyOpeningDate" type="date" required></label>
+            <label>Opening cash<input id="legacyOpeningCashInput" type="number" min="0" step="0.01" required></label>
+            <label>Notes<input id="legacySettingsNotes" placeholder="e.g. Cash balance carried over from previous merch"></label>
+            <button type="submit" class="ghost-btn">Save opening position</button>
+          </form>
+
+          <form id="legacyCashForm" class="legacy-cash-form">
+            <label>Type
+              <select id="legacyCashType" required>
+                <option value="Collection">Collectible payment</option>
+                <option value="Legacy Sale">Legacy stock sale</option>
+                <option value="Legacy Expense">Legacy expense</option>
+                <option value="Transfer to Current Campaign">Transfer to current campaign</option>
+                <option value="Refund">Refund</option>
+                <option value="Other Inflow">Other inflow</option>
+                <option value="Other Outflow">Other outflow</option>
+              </select>
+            </label>
+            <label class="legacy-cash-description">Description<input id="legacyCashDescription" required placeholder="e.g. Sold 1 old cap"></label>
+            <label>Amount<input id="legacyCashAmount" required type="number" min="0.01" step="0.01"></label>
+            <label>Date<input id="legacyCashDate" required type="date"></label>
+            <button id="addLegacyCashBtn" type="submit" class="primary-btn">Add cash entry</button>
+          </form>
+
+          <div class="table-wrap legacy-mini-table">
+            <table>
+              <thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Cash effect</th><th></th></tr></thead>
+              <tbody id="legacyCashBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="legacy-grid-two">
+          <section class="table-card">
+            <div class="table-card-head">
+              <div>
+                <h3>Outstanding collectibles</h3>
+                <p>These were carried over from the previous merch run. Record collections here when buyers pay.</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="legacy-collectibles-table">
+                <thead>
+                  <tr>
+                    <th>Person</th><th>Item(s)</th><th>Total due</th><th>Collected</th><th>Balance</th><th>Record payment</th><th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="legacyCollectiblesBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="table-card">
+            <div class="table-card-head">
+              <div>
+                <h3>Raffle & giveaway obligations</h3>
+                <p>These are inventory obligations, not sales. Mark them Reserved or Released as you fulfill them.</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="legacy-obligations-table">
+                <thead>
+                  <tr><th>Recipient</th><th>Prize</th><th>Qty</th><th>Type</th><th>Status</th></tr>
+                </thead>
+                <tbody id="legacyObligationsBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="legacy-inventory-card">
+          <div class="table-card-head">
+            <div>
+              <h3>Legacy inventory</h3>
+              <p>Next week, enter your actual physical counts here. Bundles are not tracked as bundles—each component is a separate stock item.</p>
+            </div>
+          </div>
+
+          <form id="legacyInventoryForm" class="legacy-inventory-form">
+            <label class="legacy-product-field">Product
+              <input id="legacyInventoryProduct" list="legacyProductList" required placeholder="Select or type product">
+              <datalist id="legacyProductList"></datalist>
+            </label>
+            <label>Variant / size / design<input id="legacyInventoryVariant" placeholder="e.g. XL, Design 1"></label>
+            <label>Qty on hand<input id="legacyInventoryQty" type="number" min="0" step="1" required></label>
+            <label>Reserved<input id="legacyInventoryReserved" type="number" min="0" step="1" value="0" required></label>
+            <label>Selling price<input id="legacyInventoryPrice" type="number" min="0" step="0.01" required></label>
+            <label>Unit cost<input id="legacyInventoryCost" type="number" min="0" step="0.01" placeholder="optional"></label>
+            <label>Location<input id="legacyInventoryLocation" placeholder="e.g. Merch room / Box A"></label>
+            <label>Condition<input id="legacyInventoryCondition" value="Good" placeholder="Good"></label>
+            <label class="legacy-inventory-notes">Notes<input id="legacyInventoryNotes" placeholder="Optional notes"></label>
+            <button id="addLegacyInventoryBtn" type="submit" class="primary-btn">Add / update stock</button>
+          </form>
+
+          <div class="inventory-reminder">
+            <strong>Inventory reminder:</strong>
+            Reserve enough units for unpaid collectibles and pending raffle/sticker winners before treating stock as available for sale.
+          </div>
+
+          <div class="table-wrap">
+            <table class="legacy-inventory-table">
+              <thead>
+                <tr>
+                  <th>Product</th><th>Variant</th><th>On hand</th><th>Reserved</th><th>Available</th>
+                  <th>Selling price</th><th>Available value</th><th>Location / condition</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="legacyInventoryBody"></tbody>
+            </table>
+          </div>
+          <div id="legacyInventoryEmpty" class="empty-state" hidden>No old-stock inventory has been entered yet.</div>
+        </section>
+
+        <section class="legacy-price-card">
+          <div class="table-card-head">
+            <div>
+              <h3>Legacy selling-price reference</h3>
+              <p>Updated: embroidered polo, full-sublimation polo, and tote bags are now ₱500. You can still override the price per inventory row if needed.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="legacy-price-table">
+              <thead><tr><th>Product</th><th>Current legacy selling price</th><th>Notes</th></tr></thead>
+              <tbody id="legacyPriceBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
   <div class="admin-modal" id="editOrderModal" hidden>
     <div class="admin-modal-backdrop" data-close-edit></div>
     <section class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="editOrderTitle">
@@ -380,7 +539,7 @@
   <div class="toast" id="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js?v=20260810-12"></script>
-  <script src="admin-dashboard.js?v=20260810-12"></script>
+  <script src="config.js?v=20260810-13"></script>
+  <script src="admin-dashboard.js?v=20260810-13"></script>
 </body>
 </html>
