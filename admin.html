@@ -13,14 +13,18 @@
     <section class="login-card">
       <a href="index.html" class="brand"><img class="brand-logo" src="assets/upm-shs-at-50-logo.jpg" alt="UPM SHS at 50 logo"><span><strong>UPM SHS at 50</strong><small>Merch Admin</small></span></a>
       <p class="eyebrow">AUTHORIZED ACCESS</p><h1>Merch order tracker</h1>
-      <p class="muted">Sign in using an account that has been added to <code>admin_users</code>.</p>
+      <p class="muted">Sign in with your authorized merch admin account.</p>
       <form id="loginForm">
         <label>Email<input required type="email" id="email" autocomplete="username" placeholder="admin@up.edu.ph"></label>
-        <label>Password<input required type="password" id="password" autocomplete="current-password"></label>
+        <label>Password
+          <div class="password-field">
+            <input required type="password" id="password" autocomplete="current-password">
+            <button type="button" id="togglePassword" class="password-toggle" aria-label="Show password">Show</button>
+          </div>
+        </label>
         <button class="primary-btn" type="submit">Sign in</button>
         <p id="loginMessage" class="form-message"></p>
       </form>
-      <p class="setup-note" id="setupNote"></p>
     </section>
   </div>
 
@@ -63,7 +67,7 @@
 
   <div class="toast" id="toast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="admin.js"></script>
+  <script src="config.js?v=20260810-7"></script>
+  <script src="admin.js?v=20260810-7"></script>
 </body>
 </html>
