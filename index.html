@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#8d153a">
-  <meta name="description" content="UPM School of Health Sciences at 50 — Salubong 2026 Back-to-School Merch Pre-Order">
-  <title>UPM SHS at 50 | Salubong 2026 Merch</title>
+  <meta name="description" content="Official Salubong 2026 back-to-school merchandise of UP Manila School of Health Sciences at 50.">
+  <title>Salubong 2026 Merch | UPM SHS at 50</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=League+Spartan:wght@700;800&display=swap" rel="stylesheet">
@@ -13,19 +13,20 @@
 </head>
 <body>
   <div class="announcement">
-    <span>UPM SHS AT 50</span> • SALUBONG 2026 BACK-TO-SCHOOL MERCH • <span id="deadlineTop">PRE-ORDER</span>
+    PRE-ORDERS NOW OPEN <span>•</span> SHIPS FROM PALO, LEYTE <span>•</span> NATIONWIDE VIA J&amp;T
   </div>
 
   <header class="site-header">
-    <a class="brand" href="#top">
-      <img class="brand-logo" src="assets/upm-shs-at-50-logo.jpg" alt="UPM SHS at 50 logo">
+    <a class="brand" href="#top" aria-label="UPM SHS at 50 merch">
+      <img class="brand-logo" src="assets/upm-shs-at-50-logo.jpg" alt="UPM SHS at 50">
       <span><strong>UPM SHS at 50</strong><small>Salubong 2026 Merch</small></span>
     </a>
     <nav>
       <a href="#collection">Collection</a>
+      <a href="#shipping">Shipping</a>
       <a href="#payment">Payment</a>
       <a href="#how">How to order</a>
-      <button class="cart-button" id="cartButton">Pre-order <span id="cartCount">0</span></button>
+      <button class="cart-button" id="cartButton" type="button">Pre-order <span id="cartCount">0</span></button>
     </nav>
   </header>
 
@@ -34,35 +35,32 @@
       <div class="hero-copy">
         <p class="eyebrow">UP Manila School of Health Sciences • 50th Anniversary</p>
         <h1>Back to school.<br><span>Back to SHS.</span></h1>
-        <p class="lead">Celebrate five decades of service, excellence, heroism, and social accountability with the Salubong 2026 merch collection.</p>
+        <p class="lead">Celebrate 50 years of service, excellence, heroism, and social accountability with the Salubong 2026 merch collection.</p>
         <div class="hero-actions">
-          <a class="primary-btn" href="#collection">Pre-order merch</a>
-          <a class="secondary-btn" href="#how">See how it works</a>
+          <a class="primary-btn" href="#collection">Shop the collection</a>
+          <a class="secondary-btn" href="#shipping">See shipping rates</a>
         </div>
         <div class="hero-meta">
           <span>Limited edition</span>
-          <span>Official SHS designs</span>
-          <span>Pre-order basis</span>
+          <span>Nationwide shipping</span>
+          <span>Secure pre-order</span>
         </div>
       </div>
       <div class="hero-art">
         <img src="assets/hero.jpg" alt="Salubong 2026 merch collection">
-        <div class="floating-badge">SHS<br>@ 50</div>
       </div>
     </section>
 
-    <section class="deadline-card">
-      <div><span class="mini-label">PRE-ORDER DEADLINE</span><strong id="deadlineText">To be announced</strong></div>
-      <div><span class="mini-label">FULFILLMENT</span><strong id="pickupText">Nationwide shipping available</strong></div>
-      <div><span class="mini-label">ORDER STATUS</span><strong>Trackable by organizers</strong></div>
+    <section class="quick-facts">
+      <article><span>SHIRTS</span><strong>₱350</strong></article>
+      <article><span>LANYARDS</span><strong>₱100</strong></article>
+      <article><span>SHIPPING FROM</span><strong>Palo, Leyte</strong></article>
+      <article><span>COURIER</span><strong>J&amp;T Express</strong></article>
     </section>
 
     <section class="section intro" id="collection">
-      <div>
-        <p class="eyebrow">The collection</p>
-        <h2>Choose your SHS merch.</h2>
-      </div>
-      <p>Pick your program shirt, commemorative lanyard, or build a bundle. Your bag will calculate the total automatically.</p>
+      <div><p class="eyebrow">The collection</p><h2>Choose your SHS merch.</h2></div>
+      <p>Pick your program shirt, commemorative lanyard, or both. Select your size and quantity, then check out in one order.</p>
     </section>
 
     <section class="shop-layout">
@@ -71,138 +69,199 @@
         <button class="filter active" data-filter="all">All items <span>8</span></button>
         <button class="filter" data-filter="shirt">Shirts <span>4</span></button>
         <button class="filter" data-filter="lanyard">Lanyards <span>4</span></button>
-        <div class="filter-note"><strong>Pre-order only.</strong><p>Availability and claiming schedule are subject to organizer confirmation.</p></div>
       </aside>
       <div class="product-grid" id="productGrid"></div>
     </section>
 
-    <section class="section payment-section" id="payment">
-      <div class="payment-copy">
-        <p class="eyebrow">Payment</p>
-        <h2>Pay, upload, done.</h2>
-        <p>For GCash orders, the buyer can upload payment proof directly during checkout. The proof is stored privately and can only be opened by authorized merch admins.</p>
-        <div class="payment-details">
-          <div><span>GCash account</span><strong id="gcashName">UPM SHS AT 50</strong></div>
-          <div><span>GCash number</span><strong id="gcashNumber">TO BE UPDATED</strong></div>
-        </div>
+    <section class="shipping-section" id="shipping">
+      <div class="shipping-visual">
+        <img src="assets/shipping.jpg" alt="Salubong 2026 nationwide shipping">
       </div>
-      <div class="qr-card">
-        <img id="gcashQr" src="assets/gcash-qr-placeholder.svg" alt="GCash QR code">
-        <p>Replace the placeholder QR before launch.</p>
+      <div class="shipping-content">
+        <p class="eyebrow">Nationwide delivery</p>
+        <h2>J&amp;T shipping from Palo, Leyte.</h2>
+        <p>Shipping is automatically added at checkout based on your destination zone and estimated packed weight.</p>
+
+        <div class="rate-table-wrap">
+          <table class="rate-table">
+            <thead>
+              <tr>
+                <th>Destination</th>
+                <th>≤500g</th>
+                <th>≤1kg</th>
+                <th>≤3kg</th>
+                <th>≤4kg</th>
+                <th>≤5kg</th>
+                <th>≤6kg</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Visayas</td><td>₱85</td><td>₱155</td><td>₱180</td><td>₱270</td><td>₱360</td><td>₱455</td></tr>
+              <tr><td>Metro Manila</td><td>₱100</td><td>₱180</td><td>₱200</td><td>₱300</td><td>₱400</td><td>₱500</td></tr>
+              <tr><td>Luzon</td><td>₱100</td><td>₱180</td><td>₱200</td><td>₱300</td><td>₱400</td><td>₱500</td></tr>
+              <tr><td>Mindanao</td><td>₱105</td><td>₱175</td><td>₱200</td><td>₱290</td><td>₱380</td><td>₱475</td></tr>
+              <tr><td>Island zone</td><td>₱115</td><td>₱185</td><td>₱210</td><td>₱300</td><td>₱390</td><td>₱485</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="rate-note">Rates are for a Visayas-origin parcel. Final J&amp;T assessment may vary with actual or volumetric weight, exact route, and applicable courier charges.</p>
       </div>
     </section>
 
-
-    <section class="shipping-banner">
-      <div class="shipping-copy">
-        <p class="eyebrow">Nationwide fulfillment</p>
-        <h2>We’re shipping nationwide.</h2>
-        <p>Order from anywhere in the Philippines. Shipping fee and courier details can be coordinated after your merch order is confirmed.</p>
-        <button class="primary-btn" type="button" onclick="openCart()">Start your pre-order</button>
+    <section class="payment-section" id="payment">
+      <div class="payment-copy">
+        <p class="eyebrow">Payment</p>
+        <h2>Pay through GCash or InstaPay.</h2>
+        <p>Scan the QR, send the checkout total, and upload your payment receipt with your order.</p>
+        <div class="payment-chip"><span>Payment reference</span><strong>Keep your transaction receipt</strong></div>
       </div>
-      <div class="shipping-art">
-        <img src="assets/shipping.jpg" alt="Salubong 2026 nationwide shipping poster">
+      <div class="qr-card">
+        <img id="gcashQr" src="assets/gcash-qr.jpeg" alt="GCash and InstaPay QR code">
+        <div><strong id="gcashName">GCash / InstaPay</strong><span id="gcashNumber">Scan the QR code to pay</span></div>
       </div>
     </section>
 
     <section class="feature-strip" id="how">
-      <article><span>01</span><h3>Add your merch</h3><p>Choose the design, size, and quantity.</p></article>
-      <article><span>02</span><h3>Enter your details</h3><p>Add program, campus, contact, and claiming preference.</p></article>
-      <article><span>03</span><h3>Upload proof</h3><p>Attach your GCash receipt when applicable.</p></article>
-      <article><span>04</span><h3>Keep your reference</h3><p>Receive an SHS50 order reference and receipt.</p></article>
+      <article><span>01</span><h3>Add your merch</h3><p>Choose your design, size, and quantity.</p></article>
+      <article><span>02</span><h3>Choose fulfillment</h3><p>Pick up in Palo or ship nationwide via J&amp;T.</p></article>
+      <article><span>03</span><h3>Pay &amp; upload</h3><p>Send the total and attach your payment receipt.</p></article>
+      <article><span>04</span><h3>Save your reference</h3><p>Keep your SHS50 order number for confirmation.</p></article>
     </section>
 
     <section class="cta">
-      <div><p class="eyebrow">Salubong 2026</p><h2>Ready to rep SHS?</h2><p>Build your pre-order and submit everything in one place.</p></div>
-      <button class="primary-btn" onclick="openCart()">Open pre-order bag</button>
+      <div><p class="eyebrow">Salubong 2026</p><h2>Ready to rep SHS?</h2><p>Build your order and check out in just a few steps.</p></div>
+      <button class="primary-btn" type="button" onclick="openCart()">Open pre-order bag</button>
     </section>
   </main>
 
   <footer>
-    <div class="footer-brand"><img class="footer-logo" src="assets/upm-shs-at-50-logo.jpg" alt="UPM SHS at 50 logo"><div><strong>UPM SHS at 50</strong><p>Salubong 2026 Back-to-School Merch</p></div></div>
-    <p>University of the Philippines Manila • School of Health Sciences</p>
+    <div class="footer-brand">
+      <img class="footer-logo" src="assets/upm-shs-at-50-logo.jpg" alt="UPM SHS at 50">
+      <div><strong>UPM SHS at 50</strong><p>Salubong 2026 Back-to-School Merch</p></div>
+    </div>
+    <div class="footer-contact">
+      <span>Ships from Brgy. Luntad, Palo, Leyte</span>
+      <a href="mailto:upmshsat50@gmail.com">upmshsat50@gmail.com</a>
+    </div>
   </footer>
 
   <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
-  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" aria-label="Pre-order bag">
     <div class="drawer-head">
       <div><p class="eyebrow">Your selection</p><h2>Pre-order bag</h2></div>
       <button class="icon-btn" id="closeCart" aria-label="Close">×</button>
     </div>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-empty" id="cartEmpty">
-      <div class="empty-icon">50</div><h3>Your bag is empty</h3><p>Add a shirt or lanyard to start your pre-order.</p>
+      <div class="empty-icon">50</div><h3>Your bag is empty</h3><p>Add a shirt or lanyard to get started.</p>
     </div>
     <div class="cart-footer" id="cartFooter">
-      <div class="total-row"><span>Estimated total</span><strong id="cartTotal">₱0</strong></div>
-      <p class="small-note">Prices shown are based on the current Salubong 2026 merch posters.</p>
+      <div class="total-row"><span>Merch subtotal</span><strong id="cartTotal">₱0</strong></div>
+      <p class="small-note">J&amp;T shipping is calculated during checkout.</p>
       <button class="primary-btn full" id="checkoutBtn">Continue to checkout</button>
     </div>
   </aside>
 
   <div class="modal-backdrop" id="checkoutModal" hidden>
-    <section class="checkout-modal" role="dialog" aria-modal="true">
+    <section class="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
       <div class="drawer-head">
-        <div><p class="eyebrow">Checkout</p><h2>Pre-order details</h2></div>
+        <div><p class="eyebrow">Checkout</p><h2 id="checkoutTitle">Pre-order details</h2></div>
         <button class="icon-btn" id="closeCheckout" aria-label="Close">×</button>
       </div>
 
       <form id="orderForm">
         <div class="checkout-step">
-          <div class="step-title"><span>1</span><div><h3>Buyer information</h3><p>Use contact details the organizers can reach.</p></div></div>
+          <div class="step-title"><span>1</span><div><h3>Your information</h3><p>For order confirmation and delivery.</p></div></div>
           <div class="form-grid">
             <label>Full name<input required name="fullName" autocomplete="name" placeholder="Juan Dela Cruz"></label>
             <label>Program / affiliation
               <select required name="program">
-                <option value="">Select</option><option>Medicine</option><option>Nursing</option><option>Midwifery</option>
+                <option value="">Select</option>
+                <option>Medicine</option><option>Nursing</option><option>Midwifery</option>
                 <option>Faculty / Staff</option><option>Alumni</option><option>Other</option>
               </select>
             </label>
             <label>Email<input required type="email" name="email" autocomplete="email" placeholder="name@email.com"></label>
             <label>Mobile number<input required name="mobile" autocomplete="tel" placeholder="09XX XXX XXXX"></label>
-            <label>Campus / location
+            <label>SHS campus / affiliation
               <select required name="campus">
-                <option value="">Select</option><option>Palo, Leyte</option><option>Baler, Aurora</option>
-                <option>Koronadal, South Cotabato</option><option>Tarlac</option><option>Other / To be coordinated</option>
+                <option value="">Select</option>
+                <option>Palo, Leyte</option><option>Baler, Aurora</option>
+                <option>Koronadal, South Cotabato</option><option>Tarlac</option>
+                <option>Alumni / Other</option>
               </select>
             </label>
-            <label>Preferred fulfillment
-              <select required name="fulfillment">
-                <option value="">Select</option><option>Campus pick-up</option><option>Distribution day / meet-up</option>
-                <option>Courier / shipping</option><option>To be coordinated</option>
+            <label>Fulfillment
+              <select required name="fulfillment" id="fulfillmentSelect">
+                <option value="">Select</option>
+                <option value="Campus pick-up">Campus pick-up / distribution — Palo</option>
+                <option value="J&T Express shipping">J&amp;T Express nationwide shipping</option>
               </select>
             </label>
+          </div>
+
+          <div id="shippingFields" class="shipping-fields" hidden>
+            <div class="shipping-fields-head"><strong>Delivery address</strong><span>J&amp;T Express</span></div>
+            <div class="form-grid">
+              <label class="wide">House / street / barangay<input data-shipping-required name="shippingAddress" autocomplete="street-address" placeholder="House no., street, barangay"></label>
+              <label>City / municipality<input data-shipping-required name="shippingCity" placeholder="City or municipality"></label>
+              <label>Province<input data-shipping-required name="shippingProvince" placeholder="Province"></label>
+              <label>Postal code<input data-shipping-required name="shippingPostal" inputmode="numeric" placeholder="e.g. 6501"></label>
+              <label>J&amp;T destination zone
+                <select data-shipping-required name="destinationZone" id="destinationZone">
+                  <option value="">Select</option>
+                  <option value="Visayas">Visayas</option>
+                  <option value="Metro Manila">Metro Manila</option>
+                  <option value="Luzon">Luzon</option>
+                  <option value="Mindanao">Mindanao</option>
+                  <option value="Island">Island / special island zone</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="shipping-estimate">
+              <div><span>Ships from</span><strong>Palo, Leyte</strong></div>
+              <div><span>Estimated packed weight</span><strong id="estimatedWeight">—</strong></div>
+              <div><span>J&amp;T shipping</span><strong id="shippingFee">—</strong></div>
+            </div>
+            <p class="shipping-help">The checkout estimate uses the J&amp;T Visayas-origin weight table. Courier-assessed actual or volumetric weight may change the final shipping charge.</p>
           </div>
         </div>
 
         <div class="checkout-step">
-          <div class="step-title"><span>2</span><div><h3>Payment</h3><p>Upload proof if you are paying through GCash.</p></div></div>
-          <div class="payment-choice">
-            <label class="radio-card"><input type="radio" name="paymentMethod" value="GCash" checked><span><strong>GCash</strong><small>Upload payment proof below</small></span></label>
-            <label class="radio-card"><input type="radio" name="paymentMethod" value="To be coordinated"><span><strong>To be coordinated</strong><small>For organizer-approved arrangements</small></span></label>
+          <div class="step-title"><span>2</span><div><h3>Payment</h3><p>Pay the total shown below, then upload your receipt.</p></div></div>
+          <input type="hidden" name="paymentMethod" value="GCash">
+          <div class="checkout-payment">
+            <img src="assets/gcash-qr.jpeg" alt="GCash and InstaPay QR code">
+            <div>
+              <span>Amount to send</span>
+              <strong id="amountToSend">₱0</strong>
+              <small>GCash / InstaPay</small>
+            </div>
           </div>
-          <div class="proof-area" id="proofArea">
-            <div class="inline-gcash"><strong id="checkoutGcashName">UPM SHS AT 50</strong><span id="checkoutGcashNumber">TO BE UPDATED</span></div>
-            <label class="upload-box">
-              <input id="proofInput" type="file" name="proof" accept="image/jpeg,image/png,image/webp,application/pdf">
-              <span class="upload-icon">↑</span>
-              <strong>Upload payment proof</strong>
-              <small id="proofHint">JPG, PNG, WEBP, or PDF</small>
-              <em id="proofFileName">No file selected</em>
-            </label>
-          </div>
+          <label class="upload-box">
+            <input id="proofInput" type="file" name="proof" accept="image/jpeg,image/png,image/webp,application/pdf">
+            <span class="upload-icon">↑</span>
+            <strong>Upload payment receipt</strong>
+            <small id="proofHint">JPG, PNG, WEBP, or PDF</small>
+            <em id="proofFileName">No file selected</em>
+          </label>
         </div>
 
         <div class="checkout-step">
-          <div class="step-title"><span>3</span><div><h3>Review</h3><p>Confirm your order before submitting.</p></div></div>
+          <div class="step-title"><span>3</span><div><h3>Review your order</h3><p>Confirm everything before submitting.</p></div></div>
           <div id="checkoutItems" class="checkout-items"></div>
-          <label class="full-label">Notes<textarea name="notes" rows="3" placeholder="Optional notes, batch/section, special instructions, etc."></textarea></label>
-          <label class="consent"><input required type="checkbox"><span>I confirm that my order details are correct and understand that this is a pre-order subject to organizer confirmation.</span></label>
-          <div class="order-preview"><div><span>Order total</span><strong id="checkoutTotal">₱0</strong></div><small id="checkoutItemCount">0 items</small></div>
+          <div class="checkout-totals">
+            <div><span>Merch subtotal</span><strong id="checkoutMerchTotal">₱0</strong></div>
+            <div><span>Shipping</span><strong id="checkoutShipping">₱0</strong></div>
+            <div class="grand"><span>Total</span><strong id="checkoutTotal">₱0</strong></div>
+          </div>
+          <label class="full-label">Notes<textarea name="notes" rows="3" placeholder="Optional notes"></textarea></label>
+          <label class="consent"><input required type="checkbox"><span>I confirm that the details above are correct and that this is a pre-order.</span></label>
         </div>
 
         <button class="primary-btn full submit-btn" id="submitOrderBtn" type="submit">Submit pre-order</button>
-        <p class="endpoint-note" id="connectionNote"></p>
+        <p class="public-message" id="connectionNote" hidden></p>
       </form>
     </section>
   </div>
@@ -214,13 +273,13 @@
       <h2>Thank you!</h2>
       <p>Your order reference is</p>
       <div class="order-ref" id="successRef">SHS50-XXXXXX</div>
-      <p class="success-note">Save this reference. The organizing team can use it when confirming your payment and claiming status.</p>
-      <button class="primary-btn full" id="downloadReceiptBtn">Download receipt</button>
-      <button class="secondary-btn full" id="closeSuccessBtn">Back to merch</button>
+      <p class="success-note">Save your order reference for payment confirmation and claiming or shipping updates.</p>
+      <button class="primary-btn full" id="downloadReceiptBtn" type="button">Download receipt</button>
+      <button class="secondary-btn full" id="closeSuccessBtn" type="button">Back to merch</button>
     </section>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>

@@ -1,20 +1,16 @@
 window.MERCH_CONFIG = {
-  // Supabase: paste values from Project > Connect.
-  // Use the browser-safe PUBLISHABLE key (sb_publishable_...) or legacy anon key.
+  // Add the browser-safe Supabase Project URL + Publishable key before launch.
   supabaseUrl: "",
   supabasePublishableKey: "",
 
-  // Payment details — replace before launch.
-  gcashName: "GCash / InstaPay QR",
+  gcashName: "GCash / InstaPay",
   gcashNumber: "Scan the QR code to pay",
   gcashQrImage: "assets/gcash-qr.jpeg",
 
-  preorderDeadline: "To be announced",
-  pickupNote: "Nationwide shipping available. Campus claiming/distribution details may also be announced by the organizing team.",
+  preorderDeadline: "",
   proofMaxMB: 5,
+  contactEmail: "upmshsat50@gmail.com",
 
-  // Optional links
-  facebookUrl: "",
-  instagramUrl: "",
-  contactEmail: ""
+  shipFrom: "Palo, Leyte",
+  packagingWeightG: 100
 };
