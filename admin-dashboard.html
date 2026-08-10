@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=League+Spartan:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=20260810-13">
+  <link rel="stylesheet" href="admin.css?v=20260810-14">
 </head>
 <body class="dashboard-page">
   <div id="dashboardLoading" class="dashboard-loading">
@@ -336,9 +336,28 @@
             <div class="table-card-head">
               <div>
                 <h3>Outstanding collectibles</h3>
-                <p>These were carried over from the previous merch run. Record collections here when buyers pay.</p>
+                <p>These were carried over from the previous merch run. Add newly discovered backlogs here, then record payments when buyers pay.</p>
               </div>
             </div>
+
+            <form id="legacyCollectibleForm" class="legacy-inline-add-form">
+              <label>Person
+                <input id="legacyCollectiblePerson" required placeholder="Name">
+              </label>
+              <label class="legacy-wide-field">Item(s) / description
+                <input id="legacyCollectibleDescription" required placeholder="e.g. 1 Jacket + 1 Cap">
+              </label>
+              <label>Total due
+                <input id="legacyCollectibleTotal" required type="number" min="0" step="0.01">
+              </label>
+              <label>Already collected
+                <input id="legacyCollectibleCollected" type="number" min="0" step="0.01" value="0">
+              </label>
+              <label>Notes
+                <input id="legacyCollectibleNotes" placeholder="optional">
+              </label>
+              <button type="submit" class="primary-btn">+ Add collectible</button>
+            </form>
             <div class="table-wrap">
               <table class="legacy-collectibles-table">
                 <thead>
@@ -355,9 +374,32 @@
             <div class="table-card-head">
               <div>
                 <h3>Raffle & giveaway obligations</h3>
-                <p>These are inventory obligations, not sales. Mark them Reserved or Released as you fulfill them.</p>
+                <p>These are inventory obligations, not sales. Add any missed winners/giveaways here, then mark them Reserved or Released as you fulfill them.</p>
               </div>
             </div>
+
+            <form id="legacyObligationForm" class="legacy-inline-add-form legacy-obligation-form">
+              <label>Recipient
+                <input id="legacyObligationRecipient" required placeholder="Winner / recipient">
+              </label>
+              <label class="legacy-wide-field">Prize
+                <input id="legacyObligationPrize" required placeholder="e.g. Cap, Sticker Prize">
+              </label>
+              <label>Qty
+                <input id="legacyObligationQty" required type="number" min="1" step="1" value="1">
+              </label>
+              <label>Type
+                <select id="legacyObligationCategory" required>
+                  <option value="Merch Raffle">Merch Raffle</option>
+                  <option value="Sticker Prize">Sticker Prize</option>
+                  <option value="Other Giveaway">Other Giveaway</option>
+                </select>
+              </label>
+              <label>Notes
+                <input id="legacyObligationNotes" placeholder="optional">
+              </label>
+              <button type="submit" class="primary-btn">+ Add giveaway</button>
+            </form>
             <div class="table-wrap">
               <table class="legacy-obligations-table">
                 <thead>
@@ -416,9 +458,22 @@
           <div class="table-card-head">
             <div>
               <h3>Legacy selling-price reference</h3>
-              <p>Updated: embroidered polo, full-sublimation polo, and tote bags are now ₱500. You can still override the price per inventory row if needed.</p>
+              <p>Updated: embroidered polo, full-sublimation polo, and tote bags are now ₱500. Add any old product you discover during inventory, or update the reference price anytime.</p>
             </div>
           </div>
+
+          <form id="legacyPriceForm" class="legacy-price-form">
+            <label>Product
+              <input id="legacyPriceProduct" required placeholder="Product name">
+            </label>
+            <label>Selling price
+              <input id="legacyPriceAmount" required type="number" min="0" step="0.01">
+            </label>
+            <label class="legacy-wide-field">Notes
+              <input id="legacyPriceNotes" placeholder="optional">
+            </label>
+            <button type="submit" class="ghost-btn">+ Add / update price</button>
+          </form>
           <div class="table-wrap">
             <table class="legacy-price-table">
               <thead><tr><th>Product</th><th>Current legacy selling price</th><th>Notes</th></tr></thead>
@@ -539,7 +594,7 @@
   <div class="toast" id="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js?v=20260810-13"></script>
-  <script src="admin-dashboard.js?v=20260810-13"></script>
+  <script src="config.js?v=20260810-14"></script>
+  <script src="admin-dashboard.js?v=20260810-14"></script>
 </body>
 </html>

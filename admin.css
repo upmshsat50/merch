@@ -855,3 +855,71 @@ td{font-size:.76rem}
   .legacy-cash-form button,
   .legacy-inventory-form button{grid-column:1/-1}
 }
+
+
+/* V14 — add forms for Legacy sections */
+.legacy-inline-add-form,
+.legacy-price-form{
+  display:grid;
+  gap:8px;
+  align-items:end;
+  padding:14px 18px;
+  border-bottom:1px solid var(--line);
+  background:#faf8f5
+}
+.legacy-inline-add-form{
+  grid-template-columns:150px minmax(220px,1.5fr) 125px 125px minmax(150px,1fr) auto
+}
+.legacy-obligation-form{
+  grid-template-columns:170px minmax(190px,1.4fr) 80px 140px minmax(140px,1fr) auto
+}
+.legacy-price-form{
+  grid-template-columns:minmax(200px,1.2fr) 140px minmax(220px,1.6fr) auto
+}
+.legacy-inline-add-form label,
+.legacy-price-form label{
+  min-width:0;
+  font-size:.65rem
+}
+.legacy-inline-add-form input,
+.legacy-inline-add-form select,
+.legacy-price-form input{
+  padding:8px 9px
+}
+.legacy-status-actions{
+  display:flex;
+  gap:6px;
+  align-items:center
+}
+.legacy-status-actions .status-select{min-width:105px}
+.legacy-price-edit-btn{
+  margin-left:8px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--maroon);
+  border-radius:8px;
+  padding:6px 8px;
+  font-size:.63rem;
+  font-weight:800
+}
+@media(max-width:1180px){
+  .legacy-inline-add-form,
+  .legacy-obligation-form{
+    grid-template-columns:1fr 1fr 1fr
+  }
+  .legacy-wide-field{grid-column:span 2}
+  .legacy-price-form{grid-template-columns:1fr 1fr}
+  .legacy-price-form .legacy-wide-field{grid-column:1/-1}
+}
+@media(max-width:620px){
+  .legacy-inline-add-form,
+  .legacy-obligation-form,
+  .legacy-price-form{
+    grid-template-columns:1fr 1fr
+  }
+  .legacy-wide-field{grid-column:1/-1}
+  .legacy-inline-add-form button,
+  .legacy-price-form button{
+    grid-column:1/-1
+  }
+}

@@ -1536,6 +1536,55 @@ async function deleteLegacyInventoryRow(id){
   showToast("Legacy stock row deleted");
 }
 
+
+$("legacyCollectibleForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const total = Number($("legacyCollectibleTotal").value || 0);
+  const collected = Number($("legacyCollectibleCollected").value || 0);
+
+  if(collected > total){
+    showToast("Already collected cannot be greater than total due.");
+    return;
+  }
+
+  const status = collected <= 0
+    ? "Unpaid"
+    : collected >= total
+      ? "Paid"
+      : "Partial";
+
+  const payload = {
+    person_name:$("legacyCollectiblePerson").value.trim(),
+    description:$("legacyCollectibleDescription").value.trim(),
+    total_due:total,
+    amount_collected:collected,
+    status,
+    notes:$("legacyCollectibleNotes").value.trim(),
+    updated_at:new Date().toISOString()
+  };
+
+  const {data,error} = await sb
+    .from("merch_legacy_collectibles")
+    .insert(payload)
+    .select()
+    .single();
+
+  if(error){
+    console.error(error);
+    showToast(error.code==="23505"
+      ? "That collectible entry already exists."
+      : "Could not add collectible.");
+    return;
+  }
+
+  legacyCollectibles.push(data);
+  event.currentTarget.reset();
+  $("legacyCollectibleCollected").value = 0;
+  renderLegacy();
+  showToast("Collectible added");
+});
+
 function renderLegacyCollectibles(){
   $("legacyCollectiblesBody").innerHTML = legacyCollectibles.map(c=>{
     const due = Number(c.total_due||0);
@@ -1557,9 +1606,12 @@ function renderLegacyCollectibles(){
           </div>` : "—"}
         </td>
         <td>
-          <select class="status-select" onchange="updateLegacyCollectibleStatus('${c.id}',this.value)">
-            ${["Unpaid","Partial","Paid","Waived"].map(s=>`<option ${s===c.status?"selected":""}>${s}</option>`).join("")}
-          </select>
+          <div class="legacy-status-actions">
+            <select class="status-select" onchange="updateLegacyCollectibleStatus('${c.id}',this.value)">
+              ${["Unpaid","Partial","Paid","Waived"].map(s=>`<option ${s===c.status?"selected":""}>${s}</option>`).join("")}
+            </select>
+            <button type="button" class="expense-delete-btn" onclick="deleteLegacyCollectible('${c.id}')">Delete</button>
+          </div>
         </td>
       </tr>`;
   }).join("");
@@ -1620,6 +1672,61 @@ async function updateLegacyCollectibleStatus(id,status){
   showToast("Collectible status updated");
 }
 
+
+async function deleteLegacyCollectible(id){
+  if(!confirm("Delete this collectible record?")) return;
+
+  const {error} = await sb
+    .from("merch_legacy_collectibles")
+    .delete()
+    .eq("id",id);
+
+  if(error){
+    console.error(error);
+    showToast("Could not delete collectible.");
+    return;
+  }
+
+  legacyCollectibles = legacyCollectibles.filter(c=>c.id!==id);
+  renderLegacy();
+  showToast("Collectible deleted");
+}
+
+$("legacyObligationForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const payload = {
+    recipient_name:$("legacyObligationRecipient").value.trim(),
+    prize_item:$("legacyObligationPrize").value.trim(),
+    quantity:Number($("legacyObligationQty").value || 1),
+    category:$("legacyObligationCategory").value,
+    status:"Pending",
+    notes:$("legacyObligationNotes").value.trim(),
+    updated_at:new Date().toISOString()
+  };
+
+  const {data,error} = await sb
+    .from("merch_legacy_obligations")
+    .insert(payload)
+    .select()
+    .single();
+
+  if(error){
+    console.error(error);
+    showToast(error.code==="23505"
+      ? "That giveaway entry already exists."
+      : "Could not add raffle/giveaway entry.");
+    return;
+  }
+
+  legacyObligations.push(data);
+  event.currentTarget.reset();
+  $("legacyObligationQty").value = 1;
+  $("legacyObligationCategory").value = "Merch Raffle";
+  renderLegacy();
+  showToast("Raffle/giveaway added");
+});
+
 function renderLegacyObligations(){
   $("legacyObligationsBody").innerHTML = legacyObligations.map(o=>`
     <tr>
@@ -1628,9 +1735,12 @@ function renderLegacyObligations(){
       <td>${Number(o.quantity||1)}</td>
       <td>${esc(o.category)}</td>
       <td>
-        <select class="status-select" onchange="updateLegacyObligation('${o.id}',this.value)">
-          ${["Pending","Reserved","Released","Cancelled"].map(s=>`<option ${s===o.status?"selected":""}>${s}</option>`).join("")}
-        </select>
+        <div class="legacy-status-actions">
+          <select class="status-select" onchange="updateLegacyObligation('${o.id}',this.value)">
+            ${["Pending","Reserved","Released","Cancelled"].map(s=>`<option ${s===o.status?"selected":""}>${s}</option>`).join("")}
+          </select>
+          <button type="button" class="expense-delete-btn" onclick="deleteLegacyObligation('${o.id}')">Delete</button>
+        </div>
       </td>
     </tr>
   `).join("");
@@ -1656,14 +1766,99 @@ async function updateLegacyObligation(id,status){
   showToast("Giveaway status updated");
 }
 
+
+async function deleteLegacyObligation(id){
+  if(!confirm("Delete this raffle/giveaway obligation?")) return;
+
+  const {error} = await sb
+    .from("merch_legacy_obligations")
+    .delete()
+    .eq("id",id);
+
+  if(error){
+    console.error(error);
+    showToast("Could not delete raffle/giveaway entry.");
+    return;
+  }
+
+  legacyObligations = legacyObligations.filter(o=>o.id!==id);
+  renderLegacy();
+  showToast("Raffle/giveaway entry deleted");
+}
+
+$("legacyPriceForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const payload = {
+    product_name:$("legacyPriceProduct").value.trim(),
+    selling_price:Number($("legacyPriceAmount").value || 0),
+    notes:$("legacyPriceNotes").value.trim(),
+    updated_at:new Date().toISOString()
+  };
+
+  const {data,error} = await sb
+    .from("merch_legacy_price_list")
+    .upsert(payload,{onConflict:"product_name"})
+    .select()
+    .single();
+
+  if(error){
+    console.error(error);
+    showToast("Could not save legacy price.");
+    return;
+  }
+
+  const idx = legacyPrices.findIndex(p=>p.product_name===data.product_name);
+  if(idx>=0) legacyPrices[idx]=data;
+  else legacyPrices.push(data);
+
+  legacyPrices.sort((a,b)=>a.product_name.localeCompare(b.product_name));
+  event.currentTarget.reset();
+  renderLegacy();
+  showToast("Legacy price saved");
+});
+
+async function deleteLegacyPrice(id){
+  if(!confirm("Delete this price-list entry?")) return;
+
+  const {error} = await sb
+    .from("merch_legacy_price_list")
+    .delete()
+    .eq("id",id);
+
+  if(error){
+    console.error(error);
+    showToast("Could not delete price-list entry.");
+    return;
+  }
+
+  legacyPrices = legacyPrices.filter(p=>p.id!==id);
+  renderLegacy();
+  showToast("Price-list entry deleted");
+}
+
 function renderLegacyPrices(){
   $("legacyPriceBody").innerHTML = legacyPrices.map(p=>`
     <tr>
       <td><strong>${esc(p.product_name)}</strong></td>
       <td>${peso(p.selling_price)}</td>
-      <td>${esc(p.notes || "")}</td>
+      <td>
+        <span>${esc(p.notes || "")}</span>
+        <button type="button" class="legacy-price-edit-btn" onclick="prefillLegacyPrice('${escAttr(p.id)}')">Edit</button>
+        <button type="button" class="expense-delete-btn" onclick="deleteLegacyPrice('${escAttr(p.id)}')">Delete</button>
+      </td>
     </tr>
   `).join("");
+}
+
+
+function prefillLegacyPrice(id){
+  const item = legacyPrices.find(p=>p.id===id);
+  if(!item) return;
+  $("legacyPriceProduct").value = item.product_name;
+  $("legacyPriceAmount").value = Number(item.selling_price || 0);
+  $("legacyPriceNotes").value = item.notes || "";
+  $("legacyPriceProduct").focus();
 }
 
 window.deleteLegacyCashEntry = deleteLegacyCashEntry;
@@ -1672,6 +1867,10 @@ window.deleteLegacyInventoryRow = deleteLegacyInventoryRow;
 window.recordLegacyCollection = recordLegacyCollection;
 window.updateLegacyCollectibleStatus = updateLegacyCollectibleStatus;
 window.updateLegacyObligation = updateLegacyObligation;
+window.deleteLegacyCollectible = deleteLegacyCollectible;
+window.deleteLegacyObligation = deleteLegacyObligation;
+window.deleteLegacyPrice = deleteLegacyPrice;
+window.prefillLegacyPrice = prefillLegacyPrice;
 
 /* ------------------------------
    CSV EXPORT
