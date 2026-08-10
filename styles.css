@@ -31,3 +31,88 @@ footer{max-width:1200px;margin:auto;padding:26px 24px 42px;border-top:1px solid 
 .success-backdrop{z-index:90;display:grid;place-items:center;padding:16px}.success-card{width:min(440px,100%);background:#fff;border-radius:25px;padding:31px;box-shadow:var(--shadow);text-align:center}.success-icon{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;margin:0 auto 18px;background:#e9f5ef;color:var(--forest);font-size:1.8rem;font-weight:900}.success-card h2{font-size:3rem;margin:0}.success-card>p:not(.eyebrow){color:var(--muted)}.order-ref{padding:14px;border-radius:12px;background:var(--cream);font-family:"League Spartan";font-size:1.45rem;color:var(--maroon);font-weight:800}.success-note{font-size:.79rem}.success-card .secondary-btn{margin-top:8px}.toast{position:fixed;z-index:110;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#171717;color:#fff;border-radius:99px;padding:11px 15px;font-size:.76rem;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:930px){nav>a{display:none}.hero{grid-template-columns:1fr;gap:32px}.hero-art{order:1}.hero-copy{order:2}.quick-facts{margin-left:16px;margin-right:16px;grid-template-columns:1fr 1fr}.quick-facts article:nth-child(2){border-right:0}.quick-facts article:nth-child(-n+2){border-bottom:1px solid var(--line)}.intro{grid-template-columns:1fr}.shop-layout{grid-template-columns:1fr}.filter-card{position:static;display:flex;gap:7px;overflow:auto}.filter-title{display:none}.filter{width:auto;white-space:nowrap;border:1px solid var(--line)}.shipping-section{margin-left:16px;margin-right:16px;grid-template-columns:1fr}.shipping-visual{max-width:430px}.payment-section{grid-template-columns:1fr}.qr-card{max-width:350px}.feature-strip{grid-template-columns:1fr 1fr}.feature-strip article:nth-child(2){border-right:0}.feature-strip article{border-bottom:1px solid var(--line)}}
 @media(max-width:650px){.site-header{padding:10px 16px}.brand-logo{width:44px;height:44px}.brand small{display:none}.hero{padding:18px 16px 34px}.hero h1{font-size:3.5rem}.hero-art img{border-radius:21px}.section,.shop-layout{padding-left:16px;padding-right:16px}.product-grid{grid-template-columns:1fr}.shipping-section{padding:20px}.payment-section{padding-left:16px;padding-right:16px}.feature-strip{margin:0 16px 55px;grid-template-columns:1fr}.feature-strip article{border-right:0}.cta{margin:0 16px 55px;padding:27px;display:block}.cta .primary-btn{width:100%;margin-top:10px}footer{display:block;padding-left:16px;padding-right:16px}.footer-contact{text-align:left;margin-top:14px}.form-grid{grid-template-columns:1fr}.form-grid .wide{grid-column:auto}.shipping-estimate{grid-template-columns:1fr}.checkout-payment{grid-template-columns:95px 1fr}.checkout-payment img{width:95px;height:95px}.checkout-modal{border-radius:18px}.checkout-modal form{padding:17px}}
+
+
+/* V10 payment-method selector */
+.payment-method-options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:14px
+}
+.payment-option{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:#fff;
+  cursor:pointer
+}
+.payment-option:has(input:checked){
+  border-color:var(--maroon);
+  box-shadow:0 0 0 2px rgba(141,21,58,.08);
+  background:#fffafb
+}
+.payment-option input{
+  width:auto;
+  margin-top:3px;
+  accent-color:var(--maroon)
+}
+.payment-option span,
+.payment-option strong,
+.payment-option small{display:block}
+.payment-option strong{font-size:.82rem}
+.payment-option small{
+  margin-top:3px;
+  color:var(--muted);
+  font-size:.68rem;
+  font-weight:500
+}
+.cash-payment-note{
+  display:grid;
+  grid-template-columns:48px 1fr;
+  gap:13px;
+  padding:16px;
+  border:1px solid #dfd4c8;
+  border-radius:14px;
+  background:var(--cream)
+}
+.cash-payment-note[hidden]{display:none!important}
+.cash-icon{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:var(--forest);
+  color:#fff;
+  font-family:"League Spartan";
+  font-size:1.45rem;
+  font-weight:800
+}
+.cash-payment-note strong{font-size:.86rem}
+.cash-payment-note p{
+  margin:5px 0 12px;
+  color:var(--muted);
+  font-size:.72rem;
+  line-height:1.5
+}
+.cash-due-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  padding-top:10px;
+  border-top:1px solid #dfd4c8
+}
+.cash-due-row span{color:var(--muted);font-size:.68rem}
+.cash-due-row strong{
+  font-family:"League Spartan";
+  color:var(--maroon);
+  font-size:1.25rem
+}
+@media(max-width:650px){
+  .payment-method-options{grid-template-columns:1fr}
+}

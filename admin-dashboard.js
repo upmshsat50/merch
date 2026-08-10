@@ -18,6 +18,27 @@ const peso = n => "₱" + Number(n || 0).toLocaleString("en-PH");
 const paymentStatuses = ["Pending","Verified","Rejected","Refunded"];
 const orderStatuses = ["New","Confirmed","For Production","Ready for Claim","Completed","Cancelled"];
 
+function paymentStatusOptions(order){
+  if(order.payment_method==="Cash on Pick-up"){
+    return [
+      ["Pending","Cash due on pick-up"],
+      ["Verified","Paid"],
+      ["Rejected","Payment issue"],
+      ["Refunded","Refunded"]
+    ];
+  }
+  return [
+    ["Pending","Pending verification"],
+    ["Verified","Verified"],
+    ["Rejected","Needs correction"],
+    ["Refunded","Refunded"]
+  ];
+}
+
+function paymentMethodLabel(order){
+  return order.payment_method==="Cash on Pick-up" ? "Cash on Pick-up" : "GCash / InstaPay";
+}
+
 function showToast(message) {
   const t = $("toast");
   t.textContent = message;
@@ -157,8 +178,9 @@ function renderOrders() {
       </td>
 
       <td>
+        <span class="payment-method-label">${esc(paymentMethodLabel(o))}</span>
         <select class="status-select" onchange="updateStatus('${o.id}','payment_status',this.value)">
-          ${paymentStatuses.map(s => `<option ${s === o.payment_status ? "selected" : ""}>${s}</option>`).join("")}
+          ${paymentStatusOptions(o).map(([value,label]) => `<option value="${value}" ${value === o.payment_status ? "selected" : ""}>${label}</option>`).join("")}
         </select>
       </td>
 
@@ -213,7 +235,13 @@ async function updateStatus(id, column, value) {
   if (order) order[column] = value;
 
   updateStats();
-  showToast("Status updated");
+
+  const updated = orders.find(x => x.id === id);
+  if(column==="payment_status" && value==="Verified"){
+    showToast(updated?.payment_method==="Cash on Pick-up" ? "Cash payment marked paid" : "Payment verified");
+  } else {
+    showToast("Status updated");
+  }
 }
 
 async function viewProof(path) {

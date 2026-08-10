@@ -157,6 +157,7 @@ function renderCheckoutSummary(){
   $("checkoutShipping").textContent = isShipping() ? (s.fee===null ? "Select zone" : peso(s.fee)) : "₱0";
   $("checkoutTotal").textContent = (isShipping() && s.fee===null) ? "—" : peso(orderTotal());
   $("amountToSend").textContent = (isShipping() && s.fee===null) ? "—" : peso(orderTotal());
+  if($("cashAmountDue")) $("cashAmountDue").textContent = peso(orderTotal());
   $("estimatedWeight").textContent = isShipping() ? `${(s.weightG/1000).toFixed(2)} kg` : "—";
   $("shippingFee").textContent = isShipping() ? (s.fee===null ? "Select zone" : peso(s.fee)) : "—";
   $("checkoutItems").innerHTML=cart.map(i=>{
@@ -165,14 +166,45 @@ function renderCheckoutSummary(){
   }).join("");
 }
 
+function selectedPaymentMethod(){
+  return document.querySelector('input[name="paymentMethod"]:checked')?.value || "GCash";
+}
+
+function updatePaymentUI(){
+  const shipping=isShipping();
+  const cashOption=$("cashPaymentOption");
+  const gcashRadio=document.querySelector('input[name="paymentMethod"][value="GCash"]');
+  const cashRadio=document.querySelector('input[name="paymentMethod"][value="Cash on Pick-up"]');
+
+  // Cash is only allowed for Palo campus pick-up.
+  cashOption.hidden=shipping || !$("fulfillmentSelect").value;
+
+  if(shipping && cashRadio.checked){
+    gcashRadio.checked=true;
+  }
+
+  const method=selectedPaymentMethod();
+  const cash=method==="Cash on Pick-up";
+
+  $("gcashPaymentPanel").hidden=cash;
+  $("cashPaymentPanel").hidden=!cash;
+  $("proofInput").required=!cash;
+  $("cashAmountDue").textContent=peso(orderTotal());
+
+  renderCheckoutSummary();
+}
+
 function toggleShippingFields(){
   const shipping=isShipping();
   $("shippingFields").hidden=!shipping;
   document.querySelectorAll("[data-shipping-required]").forEach(el=>el.required=shipping);
-  renderCheckoutSummary();
+  updatePaymentUI();
 }
 $("fulfillmentSelect").addEventListener("change",toggleShippingFields);
 $("destinationZone").addEventListener("change",renderCheckoutSummary);
+document.querySelectorAll('input[name="paymentMethod"]').forEach(radio=>{
+  radio.addEventListener("change",updatePaymentUI);
+});
 
 function openCart(){$("cartDrawer").classList.add("open");$("cartDrawer").setAttribute("aria-hidden","false");$("drawerBackdrop").hidden=false}
 function closeCart(){$("cartDrawer").classList.remove("open");$("cartDrawer").setAttribute("aria-hidden","true");$("drawerBackdrop").hidden=true}
@@ -209,8 +241,18 @@ $("orderForm").addEventListener("submit",async e=>{
   if(!cart.length){showToast("Your pre-order bag is empty.");return}
 
   const fd=new FormData(e.currentTarget);
+  const paymentMethod=selectedPaymentMethod();
   const proof=$("proofInput").files[0];
-  if(!proof){showToast("Please upload your payment receipt.");return}
+
+  if(isShipping() && paymentMethod!=="GCash"){
+    showToast("J&T shipping orders must be fully paid through GCash/InstaPay.");
+    return;
+  }
+
+  if(paymentMethod==="GCash" && !proof){
+    showToast("Please upload your GCash/InstaPay payment receipt.");
+    return;
+  }
 
   if(isShipping()){
     const s=currentShipping();
@@ -221,7 +263,7 @@ $("orderForm").addEventListener("submit",async e=>{
   const btn=$("submitOrderBtn");btn.disabled=true;btn.textContent="Submitting…";
 
   try{
-    const proofPath=await uploadProof(proof);
+    const proofPath=paymentMethod==="GCash" ? await uploadProof(proof) : null;
     const payload={
       p_full_name:String(fd.get("fullName")||"").trim(),
       p_program:String(fd.get("program")||""),
@@ -234,7 +276,7 @@ $("orderForm").addEventListener("submit",async e=>{
       p_shipping_province:isShipping()?String(fd.get("shippingProvince")||"").trim():"",
       p_shipping_postal:isShipping()?String(fd.get("shippingPostal")||"").trim():"",
       p_destination_zone:isShipping()?String(fd.get("destinationZone")||""):"",
-      p_payment_method:"GCash",
+      p_payment_method:paymentMethod,
       p_proof_path:proofPath,
       p_notes:String(fd.get("notes")||"").trim(),
       p_items:buildItems()
@@ -250,7 +292,7 @@ $("orderForm").addEventListener("submit",async e=>{
       campus:fd.get("campus"),fulfillment:fd.get("fulfillment"),
       shippingAddress:fd.get("shippingAddress")||"",shippingCity:fd.get("shippingCity")||"",
       shippingProvince:fd.get("shippingProvince")||"",shippingPostal:fd.get("shippingPostal")||"",
-      destinationZone:fd.get("destinationZone")||"",paymentMethod:"GCash",notes:fd.get("notes")||"",
+      destinationZone:fd.get("destinationZone")||"",paymentMethod,notes:fd.get("notes")||"",
       items:cart.map(i=>({...i})),merchTotal:Number(result.merch_total ?? merchTotal()),
       shippingFee:Number(result.shipping_fee ?? 0),total:Number(result.total ?? orderTotal()),
       estimatedWeightKg:Number(result.estimated_weight_kg ?? estimatedPackedWeightG()/1000),
@@ -258,10 +300,13 @@ $("orderForm").addEventListener("submit",async e=>{
     };
 
     $("successRef").textContent=latestOrder.reference;
+    $("successNote").textContent = paymentMethod==="Cash on Pick-up"
+      ? "Your Palo pick-up pre-order is reserved. Please pay in cash when you claim your order and keep this reference."
+      : "Your payment receipt was submitted for verification. Your pre-order will be confirmed once the Merch Team verifies your payment.";
     $("checkoutModal").hidden=true;
     $("successModal").hidden=false;
     cart=[];localStorage.removeItem("shs50-cart");renderCart();
-    e.currentTarget.reset();toggleShippingFields();$("proofFileName").textContent="No file selected";
+    e.currentTarget.reset();document.querySelector('input[name="paymentMethod"][value="GCash"]').checked=true;toggleShippingFields();$("proofFileName").textContent="No file selected";
   }catch(err){
     console.error(err);
     showToast(err.message || "Could not submit your order.");
@@ -291,8 +336,10 @@ function downloadReceipt(o){
     `Reference: ${o.reference}`,
     `Submitted: ${new Date(o.submittedAt).toLocaleString("en-PH")}`,"",
     `Name: ${o.fullName}`,`Program/Affiliation: ${o.program}`,`Email: ${o.email}`,`Mobile: ${o.mobile}`,`SHS Campus/Affiliation: ${o.campus}`,
-    ...shippingLines,"","ORDER:",...lines,"",`Merch subtotal: ${peso(o.merchTotal)}`,`Shipping: ${peso(o.shippingFee)}`,`TOTAL: ${peso(o.total)}`,"",
-    "Please keep this reference for confirmation and fulfillment updates."
+    ...shippingLines,`Payment method: ${o.paymentMethod}`,"","ORDER:",...lines,"",`Merch subtotal: ${peso(o.merchTotal)}`,`Shipping: ${peso(o.shippingFee)}`,`TOTAL: ${peso(o.total)}`,"",
+    o.paymentMethod==="Cash on Pick-up"
+      ? "Cash payment is due when you claim your order in Palo. Please keep this reference."
+      : "Your GCash/InstaPay payment is subject to verification by the Merch Team. Please keep this reference."
   ].join("\n");
 
   const blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
@@ -305,4 +352,5 @@ function showToast(msg){const t=$("toast");t.textContent=msg;t.classList.add("sh
 
 applyConfig();
 toggleShippingFields();
+updatePaymentUI();
 loadData();

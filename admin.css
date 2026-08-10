@@ -244,3 +244,11 @@ td{font-size:.76rem}
   .header-link{display:none}
   .stats-grid{grid-template-columns:1fr}
 }
+
+.payment-method-label{
+  display:block;
+  margin-bottom:6px;
+  color:var(--muted);
+  font-size:.66rem;
+  font-weight:700
+}

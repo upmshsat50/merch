@@ -111,9 +111,9 @@
     <section class="payment-section" id="payment">
       <div class="payment-copy">
         <p class="eyebrow">Payment</p>
-        <h2>Pay through GCash or InstaPay.</h2>
-        <p>Scan the QR, send the checkout total, and upload your payment receipt with your order.</p>
-        <div class="payment-chip"><span>Payment reference</span><strong>Keep your transaction receipt</strong></div>
+        <h2>Choose the payment option that works for you.</h2>
+        <p>GCash/InstaPay is available for all orders. Cash upon pick-up is available only for Palo campus pick-up orders. Nationwide shipping must be fully paid before processing.</p>
+        <div class="payment-chip"><span>For shipped orders</span><strong>Full payment + payment receipt required</strong></div>
       </div>
       <div class="qr-card">
         <img id="gcashQr" src="assets/gcash-qr.jpeg" alt="GCash and InstaPay QR code">
@@ -124,7 +124,7 @@
     <section class="feature-strip" id="how">
       <article><span>01</span><h3>Add your merch</h3><p>Choose your design, size, and quantity.</p></article>
       <article><span>02</span><h3>Choose fulfillment</h3><p>Pick up in Palo or ship nationwide via J&amp;T.</p></article>
-      <article><span>03</span><h3>Pay &amp; upload</h3><p>Send the total and attach your payment receipt.</p></article>
+      <article><span>03</span><h3>Choose payment</h3><p>GCash/InstaPay, or cash for Palo pick-up only.</p></article>
       <article><span>04</span><h3>Save your reference</h3><p>Keep your SHS50 order number for confirmation.</p></article>
     </section>
 
@@ -229,23 +229,53 @@
         </div>
 
         <div class="checkout-step">
-          <div class="step-title"><span>2</span><div><h3>Payment</h3><p>Pay the total shown below, then upload your receipt.</p></div></div>
-          <input type="hidden" name="paymentMethod" value="GCash">
-          <div class="checkout-payment">
-            <img src="assets/gcash-qr.jpeg" alt="GCash and InstaPay QR code">
+          <div class="step-title"><span>2</span><div><h3>Payment</h3><p>Choose your payment method based on your fulfillment option.</p></div></div>
+
+          <div class="payment-method-options">
+            <label class="payment-option">
+              <input type="radio" name="paymentMethod" value="GCash" checked>
+              <span>
+                <strong>GCash / InstaPay</strong>
+                <small>Available for pick-up and shipping</small>
+              </span>
+            </label>
+
+            <label class="payment-option" id="cashPaymentOption">
+              <input type="radio" name="paymentMethod" value="Cash on Pick-up">
+              <span>
+                <strong>Cash upon pick-up</strong>
+                <small>Palo campus pick-up only</small>
+              </span>
+            </label>
+          </div>
+
+          <div id="gcashPaymentPanel">
+            <div class="checkout-payment">
+              <img src="assets/gcash-qr.jpeg" alt="GCash and InstaPay QR code">
+              <div>
+                <span>Amount to send</span>
+                <strong id="amountToSend">₱0</strong>
+                <small>GCash / InstaPay</small>
+              </div>
+            </div>
+
+            <label class="upload-box">
+              <input id="proofInput" type="file" name="proof" accept="image/jpeg,image/png,image/webp,application/pdf">
+              <span class="upload-icon">↑</span>
+              <strong>Upload payment receipt</strong>
+              <small id="proofHint">JPG, PNG, WEBP, or PDF</small>
+              <em id="proofFileName">No file selected</em>
+            </label>
+          </div>
+
+          <div id="cashPaymentPanel" class="cash-payment-note" hidden>
+            <span class="cash-icon">₱</span>
             <div>
-              <span>Amount to send</span>
-              <strong id="amountToSend">₱0</strong>
-              <small>GCash / InstaPay</small>
+              <strong>Pay when you claim your order in Palo.</strong>
+              <p>No payment receipt is required now. Please prepare the exact amount or follow the Merch Team's claiming instructions.</p>
+              <div class="cash-due-row"><span>Amount due upon pick-up</span><strong id="cashAmountDue">₱0</strong></div>
             </div>
           </div>
-          <label class="upload-box">
-            <input id="proofInput" type="file" name="proof" accept="image/jpeg,image/png,image/webp,application/pdf">
-            <span class="upload-icon">↑</span>
-            <strong>Upload payment receipt</strong>
-            <small id="proofHint">JPG, PNG, WEBP, or PDF</small>
-            <em id="proofFileName">No file selected</em>
-          </label>
         </div>
 
         <div class="checkout-step">
@@ -257,7 +287,7 @@
             <div class="grand"><span>Total</span><strong id="checkoutTotal">₱0</strong></div>
           </div>
           <label class="full-label">Notes<textarea name="notes" rows="3" placeholder="Optional notes"></textarea></label>
-          <label class="consent"><input required type="checkbox"><span>I confirm that the details above are correct and that this is a pre-order.</span></label>
+          <label class="consent"><input required type="checkbox"><span>I confirm that the details above are correct and understand the payment requirements for my selected fulfillment method.</span></label>
         </div>
 
         <button class="primary-btn full submit-btn" id="submitOrderBtn" type="submit">Submit pre-order</button>
@@ -273,7 +303,7 @@
       <h2>Thank you!</h2>
       <p>Your order reference is</p>
       <div class="order-ref" id="successRef">SHS50-XXXXXX</div>
-      <p class="success-note">Save your order reference for payment confirmation and claiming or shipping updates.</p>
+      <p class="success-note" id="successNote">Save your order reference for payment confirmation and fulfillment updates.</p>
       <button class="primary-btn full" id="downloadReceiptBtn" type="button">Download receipt</button>
       <button class="secondary-btn full" id="closeSuccessBtn" type="button">Back to merch</button>
     </section>
@@ -282,7 +312,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js?v=20260810-7"></script>
-  <script src="app.js?v=20260810-7"></script>
+  <script src="config.js?v=20260810-10"></script>
+  <script src="app.js?v=20260810-10"></script>
 </body>
 </html>
