@@ -16,9 +16,13 @@ let catalogProducts = [];
 let shippingRates = {};
 let editingOrder = null;
 let editItems = [];
+let productionProgress = [];
+let orderFinance = [];
+let expenses = [];
 
 const $ = id => document.getElementById(id);
-const peso = n => "₱" + Number(n || 0).toLocaleString("en-PH");
+const peso = n => "₱" + Number(n || 0).toLocaleString("en-PH", {maximumFractionDigits:2});
+const todayISO = () => new Date().toISOString().slice(0,10);
 const paymentStatuses = ["Pending","Verified","Rejected","Refunded"];
 const orderStatuses = ["New","Confirmed","For Production","Ready for Claim","Completed","Cancelled"];
 
@@ -96,6 +100,7 @@ async function guardDashboard() {
 
   await loadCatalog();
   await loadOrders();
+  await loadOperationsData();
 }
 
 async function loadCatalog(){
@@ -140,6 +145,7 @@ $("logoutBtn").addEventListener("click", async () => {
 $("refreshBtn").addEventListener("click", async () => {
   await loadCatalog();
   await loadOrders();
+  await loadOperationsData();
 });
 $("searchInput").addEventListener("input", renderOrders);
 $("paymentFilter").addEventListener("change", renderOrders);
@@ -720,6 +726,463 @@ document.querySelector("[data-close-edit]").addEventListener("click",closeEditOr
 document.addEventListener("keydown",event=>{
   if(event.key==="Escape" && !$("editOrderModal").hidden) closeEditOrder();
 });
+
+
+/* ------------------------------
+   DASHBOARD TABS
+------------------------------ */
+
+document.querySelectorAll(".admin-tab").forEach(button=>{
+  button.addEventListener("click",()=>{
+    const tab = button.dataset.tab;
+    document.querySelectorAll(".admin-tab").forEach(b=>b.classList.toggle("active",b===button));
+    $("ordersPanel").hidden = tab!=="orders";
+    $("productionPanel").hidden = tab!=="production";
+    $("financePanel").hidden = tab!=="finance";
+
+    if(tab==="production") renderProductionSummary();
+    if(tab==="finance") renderFinance();
+  });
+});
+
+$("refreshProductionBtn").addEventListener("click", async ()=>{
+  await loadOperationsData();
+  renderProductionSummary();
+  showToast("Production summary refreshed");
+});
+
+$("refreshFinanceBtn").addEventListener("click", async ()=>{
+  await loadOperationsData();
+  renderFinance();
+  showToast("Finance refreshed");
+});
+
+/* ------------------------------
+   OPERATIONS DATA
+------------------------------ */
+
+async function loadOperationsData(){
+  const [progressRes, financeRes, expenseRes] = await Promise.all([
+    sb.from("merch_production_progress")
+      .select("product_id,variant,produced_qty,note,updated_at"),
+    sb.from("merch_order_finance")
+      .select("order_id,amount_received,amount_refunded,updated_at"),
+    sb.from("merch_expenses")
+      .select("id,category,description,quantity,unit_cost,amount,status,expense_date,created_at,updated_at")
+      .order("expense_date",{ascending:false})
+      .order("created_at",{ascending:false})
+  ]);
+
+  if(progressRes.error){
+    console.error(progressRes.error);
+    showToast("Run the V12 SQL patch to enable Production & Finance.");
+    return;
+  }
+  if(financeRes.error){
+    console.error(financeRes.error);
+    showToast("Finance tables are not available yet.");
+    return;
+  }
+  if(expenseRes.error){
+    console.error(expenseRes.error);
+    return;
+  }
+
+  productionProgress = progressRes.data || [];
+  orderFinance = financeRes.data || [];
+  expenses = expenseRes.data || [];
+
+  renderProductionSummary();
+  renderFinance();
+}
+
+function isCommittedOrder(order){
+  return ["Confirmed","For Production","Ready for Claim","Completed"].includes(order.order_status);
+}
+
+function isActiveOrder(order){
+  return order.order_status !== "Cancelled";
+}
+
+function productionKey(productId,variant){
+  return `${productId}::${variant || ""}`;
+}
+
+function productionRows(){
+  const map = new Map();
+
+  function ensure(item){
+    const key = productionKey(item.product_id,item.variant);
+    if(!map.has(key)){
+      const p = productById(item.product_id);
+      map.set(key,{
+        key,
+        product_id:item.product_id,
+        product_name:item.product_name || p?.name || "Item",
+        variant:item.variant || "",
+        committed:0,
+        pending:0,
+        autoReady:0,
+        manualProduced:0,
+        produced:0,
+        remaining:0
+      });
+    }
+    return map.get(key);
+  }
+
+  for(const order of orders){
+    if(!isActiveOrder(order)) continue;
+
+    for(const item of order.merch_order_items || []){
+      const row = ensure(item);
+      const qty = Number(item.quantity || 0);
+
+      if(isCommittedOrder(order)){
+        row.committed += qty;
+      } else {
+        row.pending += qty;
+      }
+
+      if(["Ready for Claim","Completed"].includes(order.order_status)){
+        row.autoReady += qty;
+      }
+    }
+  }
+
+  for(const progress of productionProgress){
+    const key = productionKey(progress.product_id,progress.variant);
+    let row = map.get(key);
+
+    if(!row){
+      const p = productById(progress.product_id);
+      row = {
+        key,
+        product_id:progress.product_id,
+        product_name:p?.name || "Item",
+        variant:progress.variant || "",
+        committed:0,
+        pending:0,
+        autoReady:0,
+        manualProduced:0,
+        produced:0,
+        remaining:0
+      };
+      map.set(key,row);
+    }
+
+    row.manualProduced = Number(progress.produced_qty || 0);
+  }
+
+  const rows = [...map.values()];
+  for(const row of rows){
+    row.produced = Math.max(row.manualProduced,row.autoReady);
+    row.remaining = Math.max(row.committed-row.produced,0);
+  }
+
+  return rows.sort((a,b)=>{
+    const pa = catalogProducts.findIndex(p=>p.id===a.product_id);
+    const pb = catalogProducts.findIndex(p=>p.id===b.product_id);
+    if(pa!==pb) return (pa<0?999:pa)-(pb<0?999:pb);
+    return String(a.variant).localeCompare(String(b.variant));
+  });
+}
+
+function renderProductionSummary(){
+  if(!$("productionBody")) return;
+  const rows = productionRows();
+
+  const committed = rows.reduce((s,r)=>s+r.committed,0);
+  const pending = rows.reduce((s,r)=>s+r.pending,0);
+  const produced = rows.reduce((s,r)=>s+Math.min(r.produced,r.committed),0);
+  const remaining = rows.reduce((s,r)=>s+r.remaining,0);
+
+  $("prodCommittedUnits").textContent = committed.toLocaleString();
+  $("prodPendingUnits").textContent = pending.toLocaleString();
+  $("prodProducedUnits").textContent = produced.toLocaleString();
+  $("prodRemainingUnits").textContent = remaining.toLocaleString();
+
+  $("productionEmpty").hidden = rows.length>0;
+  $("productionBody").innerHTML = rows.map(row=>`
+    <tr>
+      <td><strong>${esc(row.product_name)}</strong></td>
+      <td>${row.variant ? esc(row.variant) : "—"}</td>
+      <td><strong>${row.committed}</strong></td>
+      <td>${row.pending}</td>
+      <td>${row.committed+row.pending}</td>
+      <td>${row.produced}${row.autoReady>row.manualProduced ? `<span class="auto-produced-note">incl. ${row.autoReady} ready/completed</span>` : ""}</td>
+      <td><strong class="${row.remaining>0 ? "remaining-count" : ""}">${row.remaining}</strong></td>
+      <td>
+        <div class="production-update">
+          <input type="number" min="0" step="1" id="prod-${safeId(row.key)}" value="${row.manualProduced}">
+          <button type="button" class="ghost-btn" onclick="saveProductionProgress('${escAttr(row.product_id)}','${escAttr(row.variant)}','${safeId(row.key)}')">Save</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+async function saveProductionProgress(productId,variant,inputId){
+  const qty = Math.max(0,Number($(`prod-${inputId}`).value || 0));
+
+  const {error} = await sb
+    .from("merch_production_progress")
+    .upsert({
+      product_id:productId,
+      variant:variant || "",
+      produced_qty:qty,
+      updated_at:new Date().toISOString()
+    },{onConflict:"product_id,variant"});
+
+  if(error){
+    console.error(error);
+    showToast("Could not update produced quantity.");
+    return;
+  }
+
+  const existing = productionProgress.find(p=>p.product_id===productId && (p.variant||"")===(variant||""));
+  if(existing) existing.produced_qty = qty;
+  else productionProgress.push({product_id:productId,variant:variant||"",produced_qty:qty});
+
+  renderProductionSummary();
+  showToast("Produced quantity updated");
+}
+
+/* ------------------------------
+   FINANCE
+------------------------------ */
+
+function financeForOrder(order){
+  return orderFinance.find(f=>f.order_id===order.id) || {
+    amount_received: order.payment_status==="Verified" ? Number(order.total||0) : 0,
+    amount_refunded: order.payment_status==="Refunded" ? Number(order.total||0) : 0
+  };
+}
+
+function financeSnapshot(){
+  const active = orders.filter(isActiveOrder);
+  let activeSales = 0;
+  let grossReceived = 0;
+  let refunds = 0;
+  let receivables = 0;
+  let cashReceivable = 0;
+  let gcashPending = 0;
+  let refundDue = 0;
+  const outstandingRows = [];
+
+  for(const order of orders){
+    const f = financeForOrder(order);
+    const received = Number(f.amount_received || 0);
+    const refunded = Number(f.amount_refunded || 0);
+    const netReceived = Math.max(received-refunded,0);
+
+    grossReceived += received;
+    refunds += refunded;
+
+    if(!isActiveOrder(order)) continue;
+
+    const total = Number(order.total || 0);
+    activeSales += total;
+
+    const due = Math.max(total-netReceived,0);
+    const over = Math.max(netReceived-total,0);
+
+    receivables += due;
+    refundDue += over;
+
+    if(order.payment_method==="Cash on Pick-up"){
+      cashReceivable += due;
+    } else {
+      gcashPending += due;
+    }
+
+    if(due>0){
+      outstandingRows.push({
+        order,
+        total,
+        received:netReceived,
+        due
+      });
+    }
+  }
+
+  const netCollected = grossReceived-refunds;
+  const paidExpenses = expenses
+    .filter(e=>e.status==="Paid")
+    .reduce((s,e)=>s+Number(e.amount||0),0);
+  const projectedCosts = expenses.reduce((s,e)=>s+Number(e.amount||0),0);
+  const cashBalance = netCollected-paidExpenses;
+  const projectedSurplus = activeSales-projectedCosts;
+
+  return {
+    activeSales,
+    grossReceived,
+    refunds,
+    netCollected,
+    receivables,
+    cashReceivable,
+    gcashPending,
+    refundDue,
+    paidExpenses,
+    projectedCosts,
+    cashBalance,
+    projectedSurplus,
+    outstandingRows
+  };
+}
+
+function renderFinance(){
+  if(!$("finCollected")) return;
+  const f = financeSnapshot();
+
+  $("finCollected").textContent = peso(f.netCollected);
+  $("finReceivables").textContent = peso(f.receivables);
+  $("finPaidExpenses").textContent = peso(f.paidExpenses);
+  $("finCashBalance").textContent = peso(f.cashBalance);
+
+  $("finActiveSales").textContent = peso(f.activeSales);
+  $("finCashReceivable").textContent = peso(f.cashReceivable);
+  $("finGcashPending").textContent = peso(f.gcashPending);
+  $("finProjectedCosts").textContent = peso(f.projectedCosts);
+  $("finProjectedSurplus").textContent = peso(f.projectedSurplus);
+  $("finRefundDue").textContent = peso(f.refundDue);
+
+  renderReceivables(f.outstandingRows);
+  renderExpenses();
+}
+
+function renderReceivables(rows){
+  $("receivablesEmpty").hidden = rows.length>0;
+  $("receivablesBody").innerHTML = rows
+    .sort((a,b)=>b.due-a.due)
+    .map(({order,total,received,due})=>`
+      <tr>
+        <td><span class="ref">${esc(order.reference)}</span></td>
+        <td><strong>${esc(order.full_name)}</strong><span class="date-small">${esc(order.mobile || "")}</span></td>
+        <td>${esc(paymentMethodLabel(order))}</td>
+        <td>${peso(total)}</td>
+        <td>${peso(received)}</td>
+        <td><strong class="receivable-due">${peso(due)}</strong></td>
+        <td>${esc(order.payment_status)} / ${esc(order.order_status)}</td>
+      </tr>
+    `).join("");
+}
+
+function updateExpenseAmountFromUnits(){
+  const qty = Number($("expenseQty").value || 0);
+  const unit = Number($("expenseUnitCost").value || 0);
+  if(qty>0 && unit>0){
+    $("expenseAmount").value = (qty*unit).toFixed(2);
+  }
+}
+
+$("expenseQty").addEventListener("input",updateExpenseAmountFromUnits);
+$("expenseUnitCost").addEventListener("input",updateExpenseAmountFromUnits);
+
+$("expenseForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const button = $("addExpenseBtn");
+  button.disabled = true;
+  button.textContent = "Adding…";
+
+  const payload = {
+    category:$("expenseCategory").value,
+    description:$("expenseDescription").value.trim(),
+    quantity:$("expenseQty").value ? Number($("expenseQty").value) : null,
+    unit_cost:$("expenseUnitCost").value ? Number($("expenseUnitCost").value) : null,
+    amount:Number($("expenseAmount").value),
+    status:$("expenseStatus").value,
+    expense_date:$("expenseDate").value
+  };
+
+  const {data,error} = await sb.from("merch_expenses").insert(payload).select().single();
+
+  button.disabled = false;
+  button.textContent = "Add cost / expense";
+
+  if(error){
+    console.error(error);
+    showToast("Could not add cost / expense.");
+    return;
+  }
+
+  expenses.unshift(data);
+  event.currentTarget.reset();
+  $("expenseCategory").value = "Production";
+  $("expenseStatus").value = "Planned";
+  $("expenseDate").value = todayISO();
+  renderFinance();
+  showToast("Cost / expense added");
+});
+
+function renderExpenses(){
+  $("expenseEmpty").hidden = expenses.length>0;
+  $("expenseBody").innerHTML = expenses.map(e=>{
+    const computation = e.quantity && e.unit_cost
+      ? `${Number(e.quantity).toLocaleString()} × ${peso(e.unit_cost)}`
+      : "—";
+
+    return `
+      <tr>
+        <td>${new Date(`${e.expense_date}T00:00:00`).toLocaleDateString("en-PH")}</td>
+        <td><strong>${esc(e.category)}</strong><span class="date-small">${esc(e.description)}</span></td>
+        <td>${computation}</td>
+        <td><strong>${peso(e.amount)}</strong></td>
+        <td>
+          <select class="status-select" onchange="updateExpenseStatus('${e.id}',this.value)">
+            <option value="Planned" ${e.status==="Planned"?"selected":""}>Planned / payable</option>
+            <option value="Paid" ${e.status==="Paid"?"selected":""}>Paid</option>
+          </select>
+        </td>
+        <td><button type="button" class="expense-delete-btn" onclick="deleteExpense('${e.id}')">Delete</button></td>
+      </tr>
+    `;
+  }).join("");
+}
+
+async function updateExpenseStatus(id,status){
+  const {error} = await sb
+    .from("merch_expenses")
+    .update({status,updated_at:new Date().toISOString()})
+    .eq("id",id);
+
+  if(error){
+    console.error(error);
+    showToast("Could not update expense status.");
+    return;
+  }
+
+  const item = expenses.find(e=>String(e.id)===String(id));
+  if(item) item.status = status;
+  renderFinance();
+  showToast("Expense status updated");
+}
+
+async function deleteExpense(id){
+  if(!confirm("Delete this cost / expense entry?")) return;
+
+  const {error} = await sb.from("merch_expenses").delete().eq("id",id);
+  if(error){
+    console.error(error);
+    showToast("Could not delete expense.");
+    return;
+  }
+
+  expenses = expenses.filter(e=>String(e.id)!==String(id));
+  renderFinance();
+  showToast("Expense deleted");
+}
+
+function safeId(value){
+  return String(value).replace(/[^a-zA-Z0-9_-]/g,"_");
+}
+
+$("expenseDate").value = todayISO();
+
+window.saveProductionProgress = saveProductionProgress;
+window.updateExpenseStatus = updateExpenseStatus;
+window.deleteExpense = deleteExpense;
 
 /* ------------------------------
    CSV EXPORT

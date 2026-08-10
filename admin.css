@@ -541,3 +541,174 @@ td{font-size:.76rem}
   .edit-section-head{display:block}
   .edit-section-head .ghost-btn,.edit-payment-badge{margin-top:10px}
 }
+
+
+/* V12 — Orders / Production / Finance */
+.admin-tabs{
+  display:flex;
+  gap:7px;
+  margin:25px 0 4px;
+  padding:5px;
+  width:max-content;
+  max-width:100%;
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff
+}
+.admin-tab{
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  padding:9px 16px;
+  color:var(--muted);
+  font-weight:800;
+  font-size:.76rem
+}
+.admin-tab.active{
+  background:var(--maroon);
+  color:#fff
+}
+.admin-panel{padding-top:1px}
+.section-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:20px;
+  margin:28px 0 18px
+}
+.section-heading h2{
+  margin:0;
+  font-family:"League Spartan";
+  font-size:2.55rem;
+  letter-spacing:-.03em
+}
+.section-heading .muted{max-width:720px;margin:7px 0 0}
+.ops-stats-grid,
+.finance-primary-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:14px
+}
+.ops-stats-grid article,
+.finance-primary-grid article,
+.finance-secondary-grid article{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fff
+}
+.ops-stats-grid span,
+.finance-primary-grid span,
+.finance-secondary-grid span{
+  display:block;
+  color:var(--muted);
+  font-size:.68rem
+}
+.ops-stats-grid strong,
+.finance-primary-grid strong,
+.finance-secondary-grid strong{
+  display:block;
+  margin-top:5px;
+  font-family:"League Spartan";
+  color:var(--maroon);
+  font-size:1.75rem
+}
+.ops-stats-grid small,
+.finance-primary-grid small{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:.62rem;
+  line-height:1.35
+}
+.finance-secondary-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:14px
+}
+.table-card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:15px;
+  padding:17px 18px;
+  border-bottom:1px solid var(--line)
+}
+.table-card-head h3{margin:0;font-size:.9rem}
+.table-card-head p{margin:4px 0 0;color:var(--muted);font-size:.68rem}
+.production-table{min-width:1050px}
+.production-update{
+  display:flex;
+  gap:6px;
+  align-items:center
+}
+.production-update input{
+  width:78px;
+  padding:7px 8px
+}
+.production-update button{padding:7px 9px;font-size:.67rem}
+.auto-produced-note{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:.6rem
+}
+.remaining-count{color:var(--maroon)}
+.finance-layout{display:grid;gap:14px}
+.receivables-table{min-width:850px}
+.receivable-due{color:var(--maroon)}
+.finance-cost-card{
+  border:1px solid var(--line);
+  border-radius:17px;
+  background:#fff;
+  overflow:hidden
+}
+.expense-form{
+  display:grid;
+  grid-template-columns:150px minmax(220px,1.5fr) 90px 110px 120px 135px 140px auto;
+  gap:8px;
+  align-items:end;
+  padding:15px 18px;
+  border-bottom:1px solid var(--line);
+  background:#faf8f5
+}
+.expense-form label{
+  min-width:0;
+  font-size:.65rem
+}
+.expense-form input,.expense-form select{padding:8px 9px}
+.expense-form button{min-height:39px;white-space:nowrap}
+.expense-table-wrap{max-height:430px}
+.expense-table{min-width:900px}
+.expense-delete-btn{
+  border:1px solid #edd2d8;
+  background:#fff;
+  color:#a32748;
+  border-radius:8px;
+  padding:7px 9px;
+  font-size:.65rem;
+  font-weight:800
+}
+@media(max-width:1100px){
+  .expense-form{
+    grid-template-columns:1fr 1fr 1fr 1fr
+  }
+  .expense-description{grid-column:span 2}
+}
+@media(max-width:900px){
+  .ops-stats-grid,.finance-primary-grid{grid-template-columns:1fr 1fr}
+  .finance-secondary-grid{grid-template-columns:1fr 1fr}
+  .section-heading{display:block}
+  .section-heading .ghost-btn{margin-top:12px}
+}
+@media(max-width:620px){
+  .admin-tabs{width:100%}
+  .admin-tab{flex:1}
+  .ops-stats-grid,.finance-primary-grid,.finance-secondary-grid{grid-template-columns:1fr}
+  .expense-form{grid-template-columns:1fr 1fr}
+  .expense-description{grid-column:1/-1}
+  .expense-form button{grid-column:1/-1}
+}
