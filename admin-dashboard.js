@@ -410,7 +410,7 @@ function variantControl(item, index){
     const current = p.sizes.includes(item.variant) ? item.variant : p.sizes[0];
     item.variant = current;
     return `
-      <label>Size
+      <label>${p.category==="shirt" ? "Size" : "Design"}
         <select onchange="editItemVariantChanged(${index},this.value)">
           ${p.sizes.map(s=>`<option ${s===current ? "selected" : ""}>${esc(s)}</option>`).join("")}
         </select>
@@ -845,6 +845,9 @@ function productionRows(){
     if(!isActiveOrder(order)) continue;
 
     for(const item of order.merch_order_items || []){
+      const p = productById(item.product_id);
+      if(p?.category==="stationery") continue;
+
       const row = ensure(item);
       const qty = Number(item.quantity || 0);
 
@@ -861,6 +864,9 @@ function productionRows(){
   }
 
   for(const progress of productionProgress){
+    const progressProduct = productById(progress.product_id);
+    if(progressProduct?.category==="stationery") continue;
+
     const key = productionKey(progress.product_id,progress.variant);
     let row = map.get(key);
 

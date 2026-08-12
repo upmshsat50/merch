@@ -116,3 +116,84 @@ footer{max-width:1200px;margin:auto;padding:26px 24px 42px;border-top:1px solid 
 @media(max-width:650px){
   .payment-method-options{grid-template-columns:1fr}
 }
+
+
+/* V15 — Anniversary Stationeries & Collectibles */
+.stationery-section{
+  max-width:1200px;
+  margin:0 auto 88px;
+  padding:34px 24px 38px;
+  border:1px solid var(--line);
+  border-radius:28px;
+  background:linear-gradient(145deg,#fff8e9,#fbf1e6)
+}
+.stationery-heading{
+  display:grid;
+  grid-template-columns:1fr .9fr;
+  gap:36px;
+  align-items:end;
+  margin-bottom:18px
+}
+.stationery-heading h2{
+  margin:0;
+  font-family:"League Spartan",sans-serif;
+  font-size:clamp(2.7rem,4.5vw,4.3rem);
+  line-height:.96;
+  letter-spacing:-.04em
+}
+.stationery-heading>p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.65
+}
+.stationery-note{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:0 0 22px;
+  padding:11px 13px;
+  border:1px solid #ead5a7;
+  border-radius:12px;
+  background:#fff8df
+}
+.stationery-note span{
+  flex:0 0 auto;
+  padding:5px 8px;
+  border-radius:999px;
+  background:var(--maroon);
+  color:#fff;
+  font-size:.61rem;
+  font-weight:800;
+  letter-spacing:.07em
+}
+.stationery-note p{
+  margin:0;
+  color:#725d32;
+  font-size:.72rem;
+  line-height:1.4
+}
+.stationery-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))
+}
+.variant-label{
+  display:block;
+  margin-bottom:5px;
+  color:var(--muted);
+  font-size:.66rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.05em
+}
+@media(max-width:930px){
+  .stationery-heading{grid-template-columns:1fr}
+  .stationery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:650px){
+  .stationery-section{
+    margin-left:16px;
+    margin-right:16px;
+    padding:27px 16px
+  }
+  .stationery-grid{grid-template-columns:1fr}
+  .stationery-note{align-items:flex-start;flex-direction:column}
+}

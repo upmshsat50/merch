@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=League+Spartan:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260812-15">
 </head>
 <body>
   <div class="announcement">
@@ -22,7 +22,8 @@
       <span><strong>UPM SHS at 50</strong><small>Salubong 2026 Merch</small></span>
     </a>
     <nav>
-      <a href="#collection">Collection</a>
+      <a href="#collection">Salubong</a>
+      <a href="#stationeries">Stationeries</a>
       <a href="#shipping">Shipping</a>
       <a href="#payment">Payment</a>
       <a href="#how">How to order</a>
@@ -59,8 +60,8 @@
     </section>
 
     <section class="section intro" id="collection">
-      <div><p class="eyebrow">The collection</p><h2>Choose your SHS merch.</h2></div>
-      <p>Pick your program shirt, commemorative lanyard, or both. Select your size and quantity, then check out in one order.</p>
+      <div><p class="eyebrow">Salubong 2026 collection</p><h2>Choose your Salubong merch.</h2></div>
+      <p>Pick your program shirt, commemorative lanyard, or both. Anniversary stationeries and collectibles are listed separately below.</p>
     </section>
 
     <section class="shop-layout">
@@ -71,6 +72,24 @@
         <button class="filter" data-filter="lanyard">Lanyards <span>4</span></button>
       </aside>
       <div class="product-grid" id="productGrid"></div>
+    </section>
+
+
+    <section class="stationery-section" id="stationeries">
+      <div class="stationery-heading">
+        <div>
+          <p class="eyebrow">50th Anniversary Collection</p>
+          <h2>Stationeries &amp; Collectibles</h2>
+        </div>
+        <p>Selected pieces from the earlier UPM SHS at 50 anniversary collection. These are <strong>not part of the Salubong 2026 merch line</strong> and are offered as limited remaining anniversary stock.</p>
+      </div>
+
+      <div class="stationery-note">
+        <span>LIMITED LEGACY STOCK</span>
+        <p>Designs are selected before adding to your bag. Availability is subject to remaining physical stock.</p>
+      </div>
+
+      <div class="product-grid stationery-grid" id="stationeryGrid"></div>
     </section>
 
     <section class="shipping-section" id="shipping">
@@ -153,7 +172,7 @@
     </div>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-empty" id="cartEmpty">
-      <div class="empty-icon">50</div><h3>Your bag is empty</h3><p>Add a shirt or lanyard to get started.</p>
+      <div class="empty-icon">50</div><h3>Your bag is empty</h3><p>Add Salubong merch or an anniversary stationery/collectible to get started.</p>
     </div>
     <div class="cart-footer" id="cartFooter">
       <div class="total-row"><span>Merch subtotal</span><strong id="cartTotal">₱0</strong></div>
@@ -312,7 +331,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js?v=20260810-11"></script>
-  <script src="app.js?v=20260810-11"></script>
+  <script src="config.js?v=20260812-15"></script>
+  <script src="app.js?v=20260812-15"></script>
 </body>
 </html>

@@ -10,7 +10,16 @@ const fallbackProducts = [
   {id:"lanyard-shs",name:"SHS Commemorative Lanyard",description:"UPM SHS commemorative design",category:"lanyard",price:100,image_key:"lanyard-shs.jpg",sizes:null,estimated_weight_g:50,active:true,sort_order:5},
   {id:"lanyard-medicine",name:"Medicine Lanyard",description:"UPM SHS Medicine lanyard",category:"lanyard",price:100,image_key:"lanyard-medicine.jpg",sizes:null,estimated_weight_g:50,active:true,sort_order:6},
   {id:"lanyard-nursing",name:"Nursing Lanyard",description:"UPM SHS Nursing lanyard",category:"lanyard",price:100,image_key:"lanyard-nursing.jpg",sizes:null,estimated_weight_g:50,active:true,sort_order:7},
-  {id:"lanyard-midwifery",name:"Midwifery Lanyard",description:"UPM SHS Midwifery lanyard",category:"lanyard",price:100,image_key:"lanyard-midwifery.jpg",sizes:null,estimated_weight_g:50,active:true,sort_order:8}
+  {id:"lanyard-midwifery",name:"Midwifery Lanyard",description:"UPM SHS Midwifery lanyard",category:"lanyard",price:100,image_key:"lanyard-midwifery.jpg",sizes:null,estimated_weight_g:50,active:true,sort_order:8},
+
+  {id:"stationery-mirror-keychain",name:"Mirror Keychain",description:"58 mm anniversary mirror keychain • limited legacy stock",category:"stationery",price:40,image_key:"stationery-mirror-keychain.jpg",sizes:["UP Seal","SHS Seal","IskoLar","Iskolar ng Bayan","Matapang at Matilino","Serve the People","Honor Excellence Service","SHS Pattern","Padayon Iskolar"],estimated_weight_g:45,active:true,sort_order:20},
+  {id:"stationery-acrylic-keychain",name:"Acrylic Keychain",description:"2 × 2 in anniversary acrylic keychain • limited legacy stock",category:"stationery",price:35,image_key:"stationery-acrylic-keychain.jpg",sizes:["UPM SHS 50 Year","UPM SHS @50","50th Anniversary Logo","Honor Excellence Service","Serve the People"],estimated_weight_g:35,active:true,sort_order:21},
+  {id:"stationery-button-pin-small",name:"Button Pin — Small (25 mm)",description:"Anniversary button pin • choose your design",category:"stationery",price:20,image_key:"stationery-button-pins.jpg",sizes:["UP Seal","SHS Seal","IskoLar","UPM SHS 50 Year","Iskolar ng Bayan","Matapang at Matilino","Serve the People","50th Anniversary Logo","Honor Excellence Service","SHS Pattern","Padayon Iskolar","UPM SHS @50"],estimated_weight_g:15,active:true,sort_order:22},
+  {id:"stationery-button-pin-medium",name:"Button Pin — Medium (32 mm)",description:"Anniversary button pin • choose your design",category:"stationery",price:30,image_key:"stationery-button-pins.jpg",sizes:["UP Seal","SHS Seal","IskoLar","UPM SHS 50 Year","Iskolar ng Bayan","Matapang at Matilino","Serve the People","50th Anniversary Logo","Honor Excellence Service","SHS Pattern","Padayon Iskolar","UPM SHS @50"],estimated_weight_g:20,active:true,sort_order:23},
+  {id:"stationery-button-pin-large",name:"Button Pin — Large (58 mm)",description:"Anniversary button pin • choose your design",category:"stationery",price:40,image_key:"stationery-button-pins.jpg",sizes:["UP Seal","SHS Seal","IskoLar","UPM SHS 50 Year","Iskolar ng Bayan","Matapang at Matilino","Serve the People","50th Anniversary Logo","Honor Excellence Service","SHS Pattern","Padayon Iskolar","UPM SHS @50"],estimated_weight_g:30,active:true,sort_order:24},
+  {id:"stationery-memo-pad",name:"Memo Pad",description:"50-sheet anniversary memo pad • 5.8 × 8.3 in",category:"stationery",price:55,image_key:"stationery-memo-pad.jpg",sizes:["Design 1 — Dangal, Husay, Serbisyo","Design 2 — Honor, Excellence, Service","Design 3 — Matapang at Matilino"],estimated_weight_g:150,active:true,sort_order:25},
+  {id:"stationery-sticky-notes",name:"Sticky Note Pad",description:"50-sheet 3 × 3 in anniversary sticky notes",category:"stationery",price:40,image_key:"stationery-sticky-notes.jpg",sizes:["Design 1","Design 2","Design 3","Design 4"],estimated_weight_g:80,active:true,sort_order:26}
+
 ];
 
 const fallbackShippingRates = {
@@ -62,22 +71,47 @@ async function loadData(){
   renderCart();
 }
 
-function renderProducts(filter="all"){
-  $("productGrid").innerHTML = products.filter(p=>filter==="all" || p.category===filter).map(p=>`
+function variantLabel(p){
+  if(p.category==="shirt") return "Size";
+  if(p.category==="stationery") return "Design";
+  return "Option";
+}
+
+function productCard(p){
+  return `
     <article class="product-card">
       <div class="product-image">
         <img src="assets/${p.image_key}" alt="${esc(p.name)}">
-        <span class="product-tag">${esc(p.category)}</span>
+        <span class="product-tag">${p.category==="stationery" ? "Anniversary" : esc(p.category)}</span>
       </div>
       <div class="product-body">
         <div class="product-line">
           <div><h3 class="product-title">${esc(p.name)}</h3><p class="product-sub">${esc(p.description || "")}</p></div>
           <span class="price">${peso(p.price)}</span>
         </div>
-        ${p.sizes?.length ? `<div class="variant-row"><select id="size-${p.id}" aria-label="Size for ${esc(p.name)}">${p.sizes.map(s=>`<option>${esc(s)}</option>`).join("")}</select></div>` : ""}
+        ${p.sizes?.length ? `
+          <div class="variant-row">
+            <label class="variant-label" for="size-${p.id}">${variantLabel(p)}</label>
+            <select id="size-${p.id}" aria-label="${variantLabel(p)} for ${esc(p.name)}">
+              ${p.sizes.map(s=>`<option>${esc(s)}</option>`).join("")}
+            </select>
+          </div>` : ""}
         <button class="add-btn" type="button" onclick="addToCart('${p.id}')">Add to pre-order</button>
       </div>
-    </article>`).join("");
+    </article>`;
+}
+
+function renderProducts(filter="all"){
+  const salubongProducts = products
+    .filter(p=>["shirt","lanyard"].includes(p.category))
+    .filter(p=>filter==="all" || p.category===filter);
+
+  $("productGrid").innerHTML = salubongProducts.map(productCard).join("");
+
+  const stationeryProducts = products.filter(p=>p.category==="stationery");
+  if($("stationeryGrid")){
+    $("stationeryGrid").innerHTML = stationeryProducts.map(productCard).join("");
+  }
 }
 
 document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",()=>{
@@ -139,7 +173,7 @@ function renderCart(){
       const p=findProduct(i.id); if(!p)return "";
       return `<div class="cart-item">
         <img src="assets/${p.image_key}" alt="">
-        <div><h4>${esc(p.name)}</h4><p>${i.size?`Size ${esc(i.size)} • `:""}${peso(p.price)} each</p>
+        <div><h4>${esc(p.name)}</h4><p>${i.size?`${variantLabel(p)}: ${esc(i.size)} • `:""}${peso(p.price)} each</p>
           <div class="qty"><button type="button" onclick="changeQty('${i.key}',-1)">−</button><strong>${i.qty}</strong><button type="button" onclick="changeQty('${i.key}',1)">+</button></div>
           <button class="remove" type="button" onclick="removeItem('${i.key}')">Remove</button>
         </div>
