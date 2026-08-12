@@ -197,3 +197,26 @@ footer{max-width:1200px;margin:auto;padding:26px 24px 42px;border-top:1px solid 
   .stationery-grid{grid-template-columns:1fr}
   .stationery-note{align-items:flex-start;flex-direction:column}
 }
+
+/* V16 — Anniversary Apparel & Essentials */
+.anniversary-apparel-section{
+  max-width:1200px;margin:0 auto 34px;padding:34px 24px 38px;
+  border:1px solid var(--line);border-radius:28px;
+  background:linear-gradient(145deg,#fff8e9,#f9efe8)
+}
+.anniversary-stock-note{
+  display:flex;align-items:center;gap:12px;margin:0 0 22px;padding:11px 13px;
+  border:1px solid #ead5a7;border-radius:12px;background:#fff8df
+}
+.anniversary-stock-note span{
+  flex:0 0 auto;padding:5px 8px;border-radius:999px;background:var(--forest);
+  color:#fff;font-size:.61rem;font-weight:800;letter-spacing:.07em
+}
+.anniversary-stock-note p{margin:0;color:#725d32;font-size:.72rem;line-height:1.45}
+.anniversary-apparel-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:1050px){.anniversary-apparel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){
+  .anniversary-apparel-section{margin-left:16px;margin-right:16px;padding:27px 16px}
+  .anniversary-apparel-grid{grid-template-columns:1fr}
+  .anniversary-stock-note{align-items:flex-start;flex-direction:column}
+}

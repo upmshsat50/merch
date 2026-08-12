@@ -410,7 +410,7 @@ function variantControl(item, index){
     const current = p.sizes.includes(item.variant) ? item.variant : p.sizes[0];
     item.variant = current;
     return `
-      <label>${p.category==="shirt" ? "Size" : "Design"}
+      <label>${p.category==="stationery" ? "Design" : "Size"}
         <select onchange="editItemVariantChanged(${index},this.value)">
           ${p.sizes.map(s=>`<option ${s===current ? "selected" : ""}>${esc(s)}</option>`).join("")}
         </select>
@@ -846,7 +846,10 @@ function productionRows(){
 
     for(const item of order.merch_order_items || []){
       const p = productById(item.product_id);
-      if(p?.category==="stationery") continue;
+      if(
+        p?.category==="stationery" ||
+        ["anniversary-sublimation-polo","anniversary-embroidered-polo-maroon","anniversary-two-tone-tote"].includes(p?.id)
+      ) continue;
 
       const row = ensure(item);
       const qty = Number(item.quantity || 0);
@@ -865,7 +868,10 @@ function productionRows(){
 
   for(const progress of productionProgress){
     const progressProduct = productById(progress.product_id);
-    if(progressProduct?.category==="stationery") continue;
+    if(
+      progressProduct?.category==="stationery" ||
+      ["anniversary-sublimation-polo","anniversary-embroidered-polo-maroon","anniversary-two-tone-tote"].includes(progressProduct?.id)
+    ) continue;
 
     const key = productionKey(progress.product_id,progress.variant);
     let row = map.get(key);

@@ -19,6 +19,11 @@ const fallbackProducts = [
   {id:"stationery-button-pin-large",name:"Button Pin — Large (58 mm)",description:"Anniversary button pin • choose your design",category:"stationery",price:40,image_key:"stationery-button-pins.jpg",sizes:["UP Seal","SHS Seal","IskoLar","UPM SHS 50 Year","Iskolar ng Bayan","Matapang at Matilino","Serve the People","50th Anniversary Logo","Honor Excellence Service","SHS Pattern","Padayon Iskolar","UPM SHS @50"],estimated_weight_g:30,active:true,sort_order:24},
   {id:"stationery-memo-pad",name:"Memo Pad",description:"50-sheet anniversary memo pad • 5.8 × 8.3 in",category:"stationery",price:55,image_key:"stationery-memo-pad.jpg",sizes:["Design 1 — Dangal, Husay, Serbisyo","Design 2 — Honor, Excellence, Service","Design 3 — Matapang at Matilino"],estimated_weight_g:150,active:true,sort_order:25},
   {id:"stationery-sticky-notes",name:"Sticky Note Pad",description:"50-sheet 3 × 3 in anniversary sticky notes",category:"stationery",price:40,image_key:"stationery-sticky-notes.jpg",sizes:["Design 1","Design 2","Design 3","Design 4"],estimated_weight_g:80,active:true,sort_order:26}
+,
+  {id:"anniversary-corporate-jacket",name:"Corporate Jacket",description:"No on-hand stock • open for anniversary pre-order • sizes L, XL, XXL",category:"anniversary",price:1499,image_key:"anniversary-corporate-jacket.jpg",sizes:["L","XL","XXL"],estimated_weight_g:700,active:true,sort_order:30},
+  {id:"anniversary-sublimation-polo",name:"Full Sublimation Polo Shirt",description:"Limited remaining stock • XS: 1 • S: 2 • M: 1",category:"anniversary",price:500,image_key:"anniversary-sublimation-polo.jpg",sizes:["XS","S","M"],estimated_weight_g:250,active:true,sort_order:31},
+  {id:"anniversary-embroidered-polo-maroon",name:"Embroidered Polo Shirt — Maroon",description:"Limited remaining stock • Small Male Cut: 2 • XXL Female Cut: 1",category:"anniversary",price:500,image_key:"anniversary-embroidered-polo-maroon.jpg",sizes:["Small — Male Cut","XXL — Female Cut"],estimated_weight_g:260,active:true,sort_order:32},
+  {id:"anniversary-two-tone-tote",name:"Two-tone Canvas Tote Bag",description:"Limited remaining stock • 5 pieces available",category:"anniversary",price:500,image_key:"anniversary-two-tone-tote.jpg",sizes:null,estimated_weight_g:300,active:true,sort_order:33}
 
 ];
 
@@ -72,9 +77,17 @@ async function loadData(){
 }
 
 function variantLabel(p){
-  if(p.category==="shirt") return "Size";
   if(p.category==="stationery") return "Design";
+  if(p.category==="shirt" || p.category==="anniversary") return "Size";
   return "Option";
+}
+
+function productTag(p){
+  if(p.category==="stationery") return "Anniversary";
+  if(p.category==="anniversary"){
+    return p.id==="anniversary-corporate-jacket" ? "Anniversary Pre-order" : "Limited Anniversary Stock";
+  }
+  return p.category;
 }
 
 function productCard(p){
@@ -82,7 +95,7 @@ function productCard(p){
     <article class="product-card">
       <div class="product-image">
         <img src="assets/${p.image_key}" alt="${esc(p.name)}">
-        <span class="product-tag">${p.category==="stationery" ? "Anniversary" : esc(p.category)}</span>
+        <span class="product-tag">${esc(productTag(p))}</span>
       </div>
       <div class="product-body">
         <div class="product-line">
@@ -107,6 +120,11 @@ function renderProducts(filter="all"){
     .filter(p=>filter==="all" || p.category===filter);
 
   $("productGrid").innerHTML = salubongProducts.map(productCard).join("");
+
+  const anniversaryProducts = products.filter(p=>p.category==="anniversary");
+  if($("anniversaryApparelGrid")){
+    $("anniversaryApparelGrid").innerHTML = anniversaryProducts.map(productCard).join("");
+  }
 
   const stationeryProducts = products.filter(p=>p.category==="stationery");
   if($("stationeryGrid")){
