@@ -848,7 +848,7 @@ function productionRows(){
       const p = productById(item.product_id);
       if(
         p?.category==="stationery" ||
-        ["anniversary-sublimation-polo","anniversary-embroidered-polo-maroon","anniversary-two-tone-tote"].includes(p?.id)
+        ["anniversary-sublimation-polo","anniversary-embroidered-polo-maroon","anniversary-two-tone-tote","stationery-ref-magnet","stationery-sticker-set"].includes(p?.id)
       ) continue;
 
       const row = ensure(item);
@@ -870,7 +870,7 @@ function productionRows(){
     const progressProduct = productById(progress.product_id);
     if(
       progressProduct?.category==="stationery" ||
-      ["anniversary-sublimation-polo","anniversary-embroidered-polo-maroon","anniversary-two-tone-tote"].includes(progressProduct?.id)
+      ["anniversary-sublimation-polo","anniversary-embroidered-polo-maroon","anniversary-two-tone-tote","stationery-ref-magnet","stationery-sticker-set"].includes(progressProduct?.id)
     ) continue;
 
     const key = productionKey(progress.product_id,progress.variant);

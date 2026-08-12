@@ -220,3 +220,79 @@ footer{max-width:1200px;margin:auto;padding:26px 24px 42px;border-top:1px solid 
   .anniversary-apparel-grid{grid-template-columns:1fr}
   .anniversary-stock-note{align-items:flex-start;flex-direction:column}
 }
+
+
+/* V17 — original uploaded product-photo sliders */
+.product-image{
+  background:#f5eadb;
+}
+.anniversary-apparel-grid .product-image,
+.stationery-grid .product-image{aspect-ratio:4/5}
+.product-image .product-gallery{
+  position:absolute;
+  inset:0;
+}
+.product-gallery-frame{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+.product-image .product-gallery-slide{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  display:block;
+  opacity:0;
+  transform:none;
+  transition:opacity .22s ease;
+  background:#f5eadb;
+}
+.product-card:hover .product-image .product-gallery-slide{
+  transform:none;
+}
+.product-image .product-gallery-slide.active{opacity:1}
+.gallery-arrow{
+  position:absolute;
+  z-index:3;
+  top:50%;
+  width:36px;
+  height:36px;
+  margin-top:-18px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.74);
+  border-radius:50%;
+  background:rgba(30,20,17,.62);
+  color:#fff;
+  font-size:1.55rem;
+  line-height:1;
+  cursor:pointer;
+}
+.gallery-prev{left:10px}.gallery-next{right:10px}
+.gallery-dots{
+  position:absolute;
+  z-index:3;
+  left:50%;
+  bottom:11px;
+  transform:translateX(-50%);
+  display:flex;
+  gap:6px;
+  padding:6px 8px;
+  border-radius:999px;
+  background:rgba(30,20,17,.48)
+}
+.gallery-dot{
+  width:7px;
+  height:7px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.55);
+  cursor:pointer
+}
+.gallery-dot.active{background:#fff;transform:scale(1.18)}

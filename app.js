@@ -12,20 +12,80 @@ const fallbackProducts = [
   {id:"lanyard-nursing",name:"Nursing Lanyard",description:"UPM SHS Nursing lanyard",category:"lanyard",price:100,image_key:"lanyard-nursing.jpg",sizes:null,estimated_weight_g:50,active:true,sort_order:7},
   {id:"lanyard-midwifery",name:"Midwifery Lanyard",description:"UPM SHS Midwifery lanyard",category:"lanyard",price:100,image_key:"lanyard-midwifery.jpg",sizes:null,estimated_weight_g:50,active:true,sort_order:8},
 
-  {id:"stationery-mirror-keychain",name:"Mirror Keychain",description:"58 mm anniversary mirror keychain • limited legacy stock",category:"stationery",price:40,image_key:"stationery-mirror-keychain.jpg",sizes:["UP Seal","SHS Seal","IskoLar","Iskolar ng Bayan","Matapang at Matilino","Serve the People","Honor Excellence Service","SHS Pattern","Padayon Iskolar"],estimated_weight_g:45,active:true,sort_order:20},
-  {id:"stationery-acrylic-keychain",name:"Acrylic Keychain",description:"2 × 2 in anniversary acrylic keychain • limited legacy stock",category:"stationery",price:35,image_key:"stationery-acrylic-keychain.jpg",sizes:["UPM SHS 50 Year","UPM SHS @50","50th Anniversary Logo","Honor Excellence Service","Serve the People"],estimated_weight_g:35,active:true,sort_order:21},
-  {id:"stationery-button-pin-small",name:"Button Pin — Small (25 mm)",description:"Anniversary button pin • choose your design",category:"stationery",price:20,image_key:"stationery-button-pins.jpg",sizes:["UP Seal","SHS Seal","IskoLar","UPM SHS 50 Year","Iskolar ng Bayan","Matapang at Matilino","Serve the People","50th Anniversary Logo","Honor Excellence Service","SHS Pattern","Padayon Iskolar","UPM SHS @50"],estimated_weight_g:15,active:true,sort_order:22},
-  {id:"stationery-button-pin-medium",name:"Button Pin — Medium (32 mm)",description:"Anniversary button pin • choose your design",category:"stationery",price:30,image_key:"stationery-button-pins.jpg",sizes:["UP Seal","SHS Seal","IskoLar","UPM SHS 50 Year","Iskolar ng Bayan","Matapang at Matilino","Serve the People","50th Anniversary Logo","Honor Excellence Service","SHS Pattern","Padayon Iskolar","UPM SHS @50"],estimated_weight_g:20,active:true,sort_order:23},
-  {id:"stationery-button-pin-large",name:"Button Pin — Large (58 mm)",description:"Anniversary button pin • choose your design",category:"stationery",price:40,image_key:"stationery-button-pins.jpg",sizes:["UP Seal","SHS Seal","IskoLar","UPM SHS 50 Year","Iskolar ng Bayan","Matapang at Matilino","Serve the People","50th Anniversary Logo","Honor Excellence Service","SHS Pattern","Padayon Iskolar","UPM SHS @50"],estimated_weight_g:30,active:true,sort_order:24},
-  {id:"stationery-memo-pad",name:"Memo Pad",description:"50-sheet anniversary memo pad • 5.8 × 8.3 in",category:"stationery",price:55,image_key:"stationery-memo-pad.jpg",sizes:["Design 1 — Dangal, Husay, Serbisyo","Design 2 — Honor, Excellence, Service","Design 3 — Matapang at Matilino"],estimated_weight_g:150,active:true,sort_order:25},
-  {id:"stationery-sticky-notes",name:"Sticky Note Pad",description:"50-sheet 3 × 3 in anniversary sticky notes",category:"stationery",price:40,image_key:"stationery-sticky-notes.jpg",sizes:["Design 1","Design 2","Design 3","Design 4"],estimated_weight_g:80,active:true,sort_order:26}
+  {id:"stationery-mirror-keychain",name:"Mirror Keychain",description:"58 mm anniversary mirror keychain • limited legacy stock",category:"stationery",price:40,image_key:"stationery-mirror-keychain-updated.png",sizes:["UP Seal","SHS Seal","IskoLar","Iskolar ng Bayan","Matapang at Matilino","Serve the People","Honor Excellence Service","SHS Pattern","Padayon Iskolar"],estimated_weight_g:45,active:true,sort_order:20},
+  {id:"stationery-acrylic-keychain",name:"Acrylic Keychain",description:"2 × 2 in anniversary acrylic keychain • limited legacy stock",category:"stationery",price:35,image_key:"stationery-acrylic-keychain-updated.png",sizes:["UPM SHS 50 Year","UPM SHS @50","50th Anniversary Logo","Honor Excellence Service","Serve the People"],estimated_weight_g:35,active:true,sort_order:21},
+  {id:"stationery-button-pin-small",name:"Button Pin — Small (25 mm)",description:"Anniversary button pin • choose your design",category:"stationery",price:20,image_key:"stationery-button-pins-updated.png",sizes:["UP Seal","SHS Seal","IskoLar","UPM SHS 50 Year","Iskolar ng Bayan","Matapang at Matilino","Serve the People","50th Anniversary Logo","Honor Excellence Service","SHS Pattern","Padayon Iskolar","UPM SHS @50"],estimated_weight_g:15,active:true,sort_order:22},
+  {id:"stationery-button-pin-medium",name:"Button Pin — Medium (32 mm)",description:"Anniversary button pin • choose your design",category:"stationery",price:30,image_key:"stationery-button-pins-updated.png",sizes:["UP Seal","SHS Seal","IskoLar","UPM SHS 50 Year","Iskolar ng Bayan","Matapang at Matilino","Serve the People","50th Anniversary Logo","Honor Excellence Service","SHS Pattern","Padayon Iskolar","UPM SHS @50"],estimated_weight_g:20,active:true,sort_order:23},
+  {id:"stationery-button-pin-large",name:"Button Pin — Large (58 mm)",description:"Anniversary button pin • choose your design",category:"stationery",price:40,image_key:"stationery-button-pins-updated.png",sizes:["UP Seal","SHS Seal","IskoLar","UPM SHS 50 Year","Iskolar ng Bayan","Matapang at Matilino","Serve the People","50th Anniversary Logo","Honor Excellence Service","SHS Pattern","Padayon Iskolar","UPM SHS @50"],estimated_weight_g:30,active:true,sort_order:24},
+  {id:"stationery-memo-pad",name:"Memo Pad",description:"50-sheet anniversary memo pad • 5.8 × 8.3 in",category:"stationery",price:55,image_key:"stationery-memo-pad-updated.png",sizes:["Design 1 — Dangal, Husay, Serbisyo","Design 2 — Honor, Excellence, Service","Design 3 — Matapang at Matilino"],estimated_weight_g:150,active:true,sort_order:25},
+  {id:"stationery-sticky-notes",name:"Sticky Note Pad",description:"50-sheet 3 × 3 in anniversary sticky notes",category:"stationery",price:40,image_key:"stationery-sticky-notes.jpg",sizes:["Design 1","Design 2","Design 3","Design 4"],estimated_weight_g:80,active:true,sort_order:26},
+  {id:"stationery-ref-magnet",name:"Ref Magnet",description:"Anniversary reference magnet • choose from 5 designs",category:"stationery",price:40,image_key:"stationery-ref-magnet-updated.png",sizes:["Design 1 — UPM SHS @50","Design 2 — Honor Excellence Service","Design 3 — SHS Building","Design 4 — UPM SHS 50th Year","Design 5 — SHS Palo est. 1976"],estimated_weight_g:45,active:true,sort_order:27},
+  {id:"stationery-sticker-set",name:"Anniversary Sticker Set",description:"Anniversary sticker set • choose from 3 sets",category:"stationery",price:35,image_key:"stationery-sticker-set-updated.png",sizes:["Set 1","Set 2","Set 3"],estimated_weight_g:25,active:true,sort_order:28}
 ,
   {id:"anniversary-corporate-jacket",name:"Corporate Jacket",description:"No on-hand stock • open for anniversary pre-order • sizes L, XL, XXL",category:"anniversary",price:1499,image_key:"anniversary-corporate-jacket.jpg",sizes:["L","XL","XXL"],estimated_weight_g:700,active:true,sort_order:30},
-  {id:"anniversary-sublimation-polo",name:"Full Sublimation Polo Shirt",description:"Limited remaining stock • XS: 1 • S: 2 • M: 1",category:"anniversary",price:500,image_key:"anniversary-sublimation-polo.jpg",sizes:["XS","S","M"],estimated_weight_g:250,active:true,sort_order:31},
-  {id:"anniversary-embroidered-polo-maroon",name:"Embroidered Polo Shirt — Maroon",description:"Limited remaining stock • Small Male Cut: 2 • XXL Female Cut: 1",category:"anniversary",price:500,image_key:"anniversary-embroidered-polo-maroon.jpg",sizes:["Small — Male Cut","XXL — Female Cut"],estimated_weight_g:260,active:true,sort_order:32},
-  {id:"anniversary-two-tone-tote",name:"Two-tone Canvas Tote Bag",description:"Limited remaining stock • 5 pieces available",category:"anniversary",price:500,image_key:"anniversary-two-tone-tote.jpg",sizes:null,estimated_weight_g:300,active:true,sort_order:33}
+  {id:"anniversary-sublimation-polo",name:"Full Sublimation Polo Shirt",description:"Limited remaining stock • XS: 1 • S: 2 • M: 1",category:"anniversary",price:500,image_key:"anniversary-sublimation-polo-updated.png",sizes:["XS","S","M"],estimated_weight_g:250,active:true,sort_order:31},
+  {id:"anniversary-embroidered-polo-maroon",name:"Embroidered Polo Shirt — Maroon",description:"Limited remaining stock • Small Male Cut: 2 • XXL Female Cut: 1",category:"anniversary",price:500,image_key:"anniversary-embroidered-polo-updated.jpg",sizes:["Small — Male Cut","XXL — Female Cut"],estimated_weight_g:260,active:true,sort_order:32},
+  {id:"anniversary-two-tone-tote",name:"Two-tone Canvas Tote Bag",description:"Limited remaining stock • 5 pieces available",category:"anniversary",price:500,image_key:"anniversary-two-tone-tote-updated.png",sizes:null,estimated_weight_g:300,active:true,sort_order:33}
 
 ];
+
+
+
+// V17: These galleries use the user's uploaded photos exactly as supplied.
+// No cropping, resizing, recompression, or image editing was applied to the files.
+const productGalleries = {
+  "stationery-mirror-keychain":["stationery-mirror-keychain-updated.png"],
+  "stationery-acrylic-keychain":["stationery-acrylic-keychain-updated.png"],
+  "stationery-button-pin-small":["stationery-button-pins-updated.png"],
+  "stationery-button-pin-medium":["stationery-button-pins-updated.png"],
+  "stationery-button-pin-large":["stationery-button-pins-updated.png"],
+  "stationery-memo-pad":["stationery-memo-pad-updated.png"],
+  "stationery-ref-magnet":["stationery-ref-magnet-updated.png"],
+  "stationery-sticker-set":["stationery-sticker-set-updated.png"],
+  "anniversary-sublimation-polo":["anniversary-sublimation-polo-updated.png","anniversary-sublimation-polo-promo.jpg"],
+  "anniversary-embroidered-polo-maroon":["anniversary-embroidered-polo-updated.jpg"],
+  "anniversary-two-tone-tote":["anniversary-two-tone-tote-updated.png","anniversary-two-tone-tote-promo.jpg"]
+};
+const productSlideIndex = {};
+
+function galleryFor(p){
+  return productGalleries[p.id]?.length ? productGalleries[p.id] : [p.image_key];
+}
+function cardImageFor(p){ return galleryFor(p)[0] || p.image_key; }
+function productGalleryMarkup(p){
+  const gallery=galleryFor(p);
+  const current=Math.min(productSlideIndex[p.id] || 0, gallery.length-1);
+  productSlideIndex[p.id]=current;
+  return `
+    <div class="product-gallery" data-gallery-id="${esc(p.id)}">
+      <div class="product-gallery-frame">
+        ${gallery.map((src,idx)=>`<img class="product-gallery-slide ${idx===current?"active":""}" src="assets/${esc(src)}" alt="${esc(p.name)}${gallery.length>1?` — photo ${idx+1}`:""}">`).join("")}
+      </div>
+      ${gallery.length>1 ? `
+        <button class="gallery-arrow gallery-prev" type="button" aria-label="Previous photo" onclick="changeProductSlide('${p.id}',-1)">‹</button>
+        <button class="gallery-arrow gallery-next" type="button" aria-label="Next photo" onclick="changeProductSlide('${p.id}',1)">›</button>
+        <div class="gallery-dots" aria-label="Product photo slides">
+          ${gallery.map((_,idx)=>`<button type="button" class="gallery-dot ${idx===current?"active":""}" aria-label="Show photo ${idx+1}" onclick="setProductSlide('${p.id}',${idx})"></button>`).join("")}
+        </div>` : ""}
+    </div>`;
+}
+function setProductSlide(id,index){
+  const p=products.find(x=>x.id===id) || fallbackProducts.find(x=>x.id===id);
+  if(!p) return;
+  const gallery=galleryFor(p);
+  productSlideIndex[id]=Math.max(0,Math.min(index,gallery.length-1));
+  const root=document.querySelector(`[data-gallery-id="${CSS.escape(id)}"]`);
+  if(!root) return;
+  root.querySelectorAll(".product-gallery-slide").forEach((img,i)=>img.classList.toggle("active",i===productSlideIndex[id]));
+  root.querySelectorAll(".gallery-dot").forEach((dot,i)=>dot.classList.toggle("active",i===productSlideIndex[id]));
+}
+function changeProductSlide(id,delta){
+  const p=products.find(x=>x.id===id) || fallbackProducts.find(x=>x.id===id);
+  if(!p) return;
+  const gallery=galleryFor(p);
+  const current=productSlideIndex[id] || 0;
+  setProductSlide(id,(current+delta+gallery.length)%gallery.length);
+}
 
 const fallbackShippingRates = {
   "Visayas":[[0.5,85],[1,155],[3,180],[4,270],[5,360],[6,455]],
@@ -94,7 +154,7 @@ function productCard(p){
   return `
     <article class="product-card">
       <div class="product-image">
-        <img src="assets/${p.image_key}" alt="${esc(p.name)}">
+        ${productGalleryMarkup(p)}
         <span class="product-tag">${esc(productTag(p))}</span>
       </div>
       <div class="product-body">
@@ -190,7 +250,7 @@ function renderCart(){
     $("cartItems").innerHTML=cart.map(i=>{
       const p=findProduct(i.id); if(!p)return "";
       return `<div class="cart-item">
-        <img src="assets/${p.image_key}" alt="">
+        <img src="assets/${cardImageFor(p)}" alt="">
         <div><h4>${esc(p.name)}</h4><p>${i.size?`${variantLabel(p)}: ${esc(i.size)} • `:""}${peso(p.price)} each</p>
           <div class="qty"><button type="button" onclick="changeQty('${i.key}',-1)">−</button><strong>${i.qty}</strong><button type="button" onclick="changeQty('${i.key}',1)">+</button></div>
           <button class="remove" type="button" onclick="removeItem('${i.key}')">Remove</button>
@@ -384,7 +444,7 @@ function downloadReceipt(o){
   ] : ["Fulfillment: Campus pick-up / distribution — Palo"];
 
   const txt=[
-    "UPM SHS AT 50 — SALUBONG 2026 MERCH PRE-ORDER",
+    "UPM SHS AT 50 — MERCH PRE-ORDER",
     `Reference: ${o.reference}`,
     `Submitted: ${new Date(o.submittedAt).toLocaleString("en-PH")}`,"",
     `Name: ${o.fullName}`,`Program/Affiliation: ${o.program}`,`Email: ${o.email}`,`Mobile: ${o.mobile}`,`SHS Campus/Affiliation: ${o.campus}`,
@@ -400,6 +460,9 @@ function downloadReceipt(o){
 }
 
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+window.changeProductSlide=changeProductSlide;
+window.setProductSlide=setProductSlide;
+
 function showToast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(window._toast);window._toast=setTimeout(()=>t.classList.remove("show"),2400)}
 
 applyConfig();
